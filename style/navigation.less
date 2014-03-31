@@ -4,6 +4,47 @@
 {
 	background: @primaryBackground;
 	padding: 10px;
-	width: 120px;
+	width: 200px;
 	float:left;
+}
+
+#navigation ul
+{
+	list-style: none;
+	margin: 0;
+	padding-left: 0;
+}
+
+#navigation ul li
+{
+	background-color: @primaryStrong;
+	max-height: 30px;
+	margin-bottom: 5px;
+	padding-left: 10px;
+	color: white;
+	transition: max-height 0.2s;
+	overflow: hidden;
+}
+
+
+#navigation ul li:hover
+{
+	background-color: @primaryPale2;
+	margin-bottom: 5px;
+	padding-left: 10px;
+	color: black;
+	max-height: 200px;
+}
+
+/*
+ * Submenus 
+ */
+ 
+#navigation ul li ul
+{
+}
+
+#navigation ul li:hover ul
+{
+	padding-bottom: 10px;
 }

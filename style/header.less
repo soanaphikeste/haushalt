@@ -1,9 +1,11 @@
 @import "colors.less";
 #header
 {
+	text-align: left;
 	background: @primaryBackground;
 	width: 100%;
 	margin: 0;
+	height: 40px;
 }
 
 #header div.info
@@ -25,8 +27,19 @@
 #header ul li
 {
 	float: left;
+	background: @primaryStrong;
+	width: 150px;
+	height: 30px;
+	padding-left: 10px;
+	margin-right: 5px;
+	color: white
 }
 
+#header ul li:hover
+{
+	background: @primaryPale1;
+	color: black;
+}
 #header div.clear
 {
 	clear: both;
