@@ -2,9 +2,7 @@
 
 #navigation
 {
-	background: @primaryBackground;
-	padding: 10px;
-	width: 200px;
+	padding: 0px;
 	float:left;
 }
 
@@ -13,38 +11,69 @@
 	list-style: none;
 	margin: 0;
 	padding-left: 0;
+	margin-left: 10px;
 }
 
 #navigation ul li
 {
-	background-color: @primaryStrong;
-	max-height: 30px;
-	margin-bottom: 5px;
-	padding-left: 10px;
+	background-color: @navigationDark;
 	color: white;
-	transition: max-height 0.2s;
-	overflow: hidden;
+	overflow: visible;
 }
 
 
 #navigation ul li:hover
 {
-	background-color: @primaryPale2;
-	margin-bottom: 5px;
-	padding-left: 10px;
+	background-color: @navigationLight;
 	color: black;
-	max-height: 200px;
 }
 
 /*
- * Submenus 
+ * Submenus Level 1
  */
+ 
  
 #navigation ul li ul
 {
+	display: none;
+	margin-left: -10px;
+	margin-top: -2px;
+	padding-top: 5px;
 }
+
 
 #navigation ul li:hover ul
 {
-	padding-bottom: 10px;
+	display: block;
 }
+
+#navigation ul li ul li
+{
+	float: left;
+}
+
+/*
+ * Submenus Level 2
+ */
+ 
+#navigation ul li ul li div 
+{
+	width: 305px;
+}
+ 
+#navigation ul li ul li ul,
+#navigation ul li:hover ul li ul
+{
+	float: right;
+	display: none;
+	width: 150px;
+	padding-left: 5px;
+	margin-top: -5px;
+}
+
+
+#navigation ul li ul li:hover ul 
+{
+	display: block;
+}
+
