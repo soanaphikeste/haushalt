@@ -1,0 +1,12 @@
+Haushalt
+========
+
+Installation: 
+--------------
+ 1.) Node installieren
+	...
+ 4.) Mime installieren:
+	npm install mime
+ 3.) Starten:
+	node server.js
+ 

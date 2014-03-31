@@ -1,5 +1,5 @@
 /*
  *	Auszuführen mit Node.js 
  */
-var webserver = require("./server/webserver");
+var webserver = require("./webserver");
 webserver.start(8080);
