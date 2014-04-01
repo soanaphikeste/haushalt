@@ -1,48 +1,30 @@
 @import "colors.less";
-#header
-{
+#header {
 	text-align: left;
-	background: @primaryBackground;
+	background: @headerBackground;
 	width: 100%;
 	margin: 0;
-	height: 40px;
+	height: 28px;
 	position: fixed;
 	top: 0px;
+	border-bottom: 4px solid @headerBorder;
 }
 
-#header div.info
-{
+#header div.info {
 	float: right;
-}
-
-#header div.quick
-{
-	float: left;
-}
-
-#header ul
-{
-	list-style: none;
-	margin: 0;
-}
-
-#header ul li
-{
-	float: left;
-	background: @primaryStrong;
-	width: 150px;
-	height: 30px;
+	margin-right: 10px;
+	height: 32px;
+	background-color: @navigationDark;
+	border-bottom: 4px solid @navigationBorder;
+	color: white;
 	padding-left: 10px;
-	margin-right: 5px;
-	color: white
+	padding-right: 10px;
 }
 
-#header ul li:hover
-{
-	background: @primaryPale1;
-	color: black;
+#header div.quick {
+	float: left;
 }
-#header div.clear
-{
+
+#header div.clear {
 	clear: both;
 }
