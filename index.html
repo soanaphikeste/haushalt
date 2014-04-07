@@ -10,6 +10,7 @@
 		<script type="text/javascript" src="lib/jquery.js"></script>
 		<script type="text/javascript" src="lib/less.js"></script>
 		<script type="text/javascript" src="menu.js"></script>
+		<script type="text/javascript" src="haushalt.js"></script>
 	</head>
 	<body>
 		<div id="header">
@@ -17,7 +18,7 @@
 				Eingeloggt als: Max, Familie Mustermann
 			</div>
 			<div id="navigation">
-				<ul>
+				<!--<ul>
 					<li>
 						<div>Lorem
 							<ul>
@@ -64,7 +65,7 @@
 							</ul>
 						</div>
 					</li>
-				</ul>
+				</ul>-->
 			</div>
 			<div class="clear"></div>
 		</div>
@@ -102,5 +103,35 @@
 				</div>
 			</div>
 		</div>
+		<script type="text/javascript">
+			var lorem = new MenuEntry("Lorem", function() 
+			{
+				alert("Lorem");
+			});
+			var ipsum = new MenuEntry("Ipsum");
+			var dolor = new MenuEntry("Dolor", function() 
+			{
+				alert("Dolor");
+			});
+			lorem.addEntry(dolor);
+			Menu.addEntry(lorem);
+			Menu.addEntry(ipsum);
+			ipsum.addEntry(new MenuEntry("Sit", function() 
+			{
+				alert("Sit");
+			}));
+			ipsum.addEntry(new MenuEntry("Amet"));
+			lorem.addEntry(new MenuEntry("Hallo"));
+			dolor.addEntry(new MenuEntry("Kuchen", function() 
+			{
+				alert("Kuchen");
+			}));
+			dolor.addEntry(new MenuEntry("Kekse", function() 
+			{
+				alert("Käse");
+			}));
+			Menu.refresh();
+			
+		</script>
 	</body>
 </html>
