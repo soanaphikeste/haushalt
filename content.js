@@ -1,14 +1,11 @@
-Content = 
-{
-	setContent : function(obj)
-	{
+Content =  {
+	setContent : function(obj) {
 		var content = $('#content');
 		if(this.current !== undefined && this.current.onDetached !== undefined)
 			this.current.onDetached();
 		this.current = obj;
 		content.css({"opacity" : "0"});
-		setTimeout(function()
-		{
+		setTimeout(function() {
 			content.html("");
 			content.append("<h1>" + obj.heading + "</h1>");
 			content.append($("<div id='contentText'></div>").append(obj.html));
