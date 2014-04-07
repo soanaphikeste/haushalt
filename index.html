@@ -10,6 +10,7 @@
 		<script type="text/javascript" src="lib/jquery.js"></script>
 		<script type="text/javascript" src="lib/less.js"></script>
 		<script type="text/javascript" src="menu.js"></script>
+		<script type="text/javascript" src="content.js"></script>
 		<script type="text/javascript" src="haushalt.js"></script>
 	</head>
 	<body>
@@ -128,9 +129,18 @@
 			}));
 			dolor.addEntry(new MenuEntry("Kekse", function() 
 			{
-				alert("Käse");
+				Content.setContent(
+				{
+					heading : "Hallo",
+					html : "<h2>Hallo</h2><p>Test</p>",
+					onContentAttached : function()
+					{
+						alert("hallo");
+					}
+				});
 			}));
 			Menu.refresh();
+			
 			
 		</script>
 	</body>
