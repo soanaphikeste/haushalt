@@ -1,8 +1,14 @@
+/*
+ * Imports 
+ */
 var http = require("http"); //Import http to server files
 var fs = require("fs"); //Import tools for manipulating filesystem
 var url = require("url"); //Parsing urls
 var mime = require('mime'); //Parsing MIME-Types
 
+/*
+ * Code
+ */
 function request(req, res)  {
 	var reqUrl = url.parse(req.url);
 	var path = reqUrl.pathname;
