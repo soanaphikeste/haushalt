@@ -4,6 +4,30 @@
 var fs = require("fs"); //Import tools for manipulating filesystem
 
 /*
+ * One single household
+ */
+function Household(name, password) {
+	this.data = { //Everything in this subobject will be saved. Everything else will NOT!
+		name : name,
+		password : password
+	};
+	this.changed = true;
+}
+
+Household.prototype = {
+	checkPassword : function(password) {
+		return this.data.password === password;
+	},
+	hasChanged : function() {
+		return this.changed; //TODO: Determine better way of recognizing changes to this object
+	},
+	triggerChange : function() {
+		this.changed = true;
+		Households.triggerChange();
+	}
+};
+
+/*
  * Manages all households
  */
 
@@ -13,15 +37,18 @@ Households = {
 	load : function() {
 		fs.readdir("households", function(err, files) {
 			if(!err) {
+				console.log(files);
 				for(var i = 0; i < files.length; i++) {
-					fs.readFile(files[i], function(err, data) {
+					fs.readFile("households/" + files[i], function(err, data) {
 						if(!err) {
 							var obj = JSON.parse(data);
-							households[obj.name] = obj;
-							console.log("Household \"" + obj.name + "\" successfully loaded from file " + files[i]);
+							var hhold = new Household();
+							hhold.data = obj;
+							Households.households[obj.name] = hhold;
+							console.log("Household \"" + obj.name + "\" successfully loaded");
 						}
 						else {
-							console.log("Unable to load household at file " +  files[i]);
+							console.log("Unable to load household");
 						}
 					});
 				}
@@ -35,7 +62,7 @@ Households = {
 		fs.mkdir("households", function(err) {});
 		for(var name in this.households) {
 			if(this.households[name].hasChanged()) {
-				fs.writeFile("households/" + name + ".json", JSON.stringify(this.households[name]), function(err) {
+				fs.writeFile("households/" + name + ".json", JSON.stringify(this.households[name].data), function(err) {
 					if(err) {
 						console.log("Error saving household " + name);
 					}
@@ -74,27 +101,6 @@ Households = {
 	}
 };
 
-/*
- * One single household
- */
-function Household(name, password) {
-	this.name = name;
-	this.password = password;
-	this.changed = true;
-}
-
-Household.prototype = {
-	checkPassword : function(password) {
-		return this.password === password;
-	},
-	hasChanged : function() {
-		return this.changed; //TODO: Determine better way of recognizing changes to this object
-	},
-	triggerChange : function() {
-		this.changed = true;
-		Households.triggerChange();
-	}
-};
 
 /*
  * Exports
