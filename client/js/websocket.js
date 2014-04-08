@@ -14,6 +14,7 @@ Websocket = {
 		this.socket.onmessage = function(e)
 		{
 			var obj = JSON.parse(e.data);
+			console.log(obj);
 			if(obj._type == "Request") {
 				if(self.requests[obj._requestID] !== undefined) {
 					var answer = self.requests[obj._requestID](obj);
@@ -46,6 +47,6 @@ Websocket = {
 	}
 };
 
-$.ready(function() {
+$(function() {
 	Websocket.connect();
 });
