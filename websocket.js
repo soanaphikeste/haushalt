@@ -40,7 +40,7 @@ Websocket.prototype = {
 		this.responses[this.counter] = listener;
 		obj._requestID = request;
 		obj._type = "Request";
-		obj._responseID = this.counter;
+		obj._responseID = this.counter++;
 		obj = JSON.stringify(obj);
 		this.socket.send(obj);
 	}
