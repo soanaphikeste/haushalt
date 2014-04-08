@@ -6,8 +6,8 @@ var mime = require('mime'); //Parsing MIME-Types
 function request(req, res)  {
 	var reqUrl = url.parse(req.url);
 	var path = reqUrl.pathname;
-	if(path == "/") path = "./index.html";
-	else path = "." + path;
+	if(path == "/") path = "./client/index.html";
+	else path = "./client/" + path;
 	fs.readFile(path, function(err, data) {
 		if(err) {
 			res.writeHead(404, {"Content-Type" : "text/html"});
