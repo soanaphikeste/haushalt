@@ -24,6 +24,9 @@ Household.prototype = {
 	triggerChange : function() {
 		this.changed = true;
 		Households.triggerChange();
+	},
+	registerClient : function(socket) {
+		
 	}
 };
 

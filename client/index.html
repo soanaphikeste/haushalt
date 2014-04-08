@@ -59,17 +59,29 @@
 		</script>
 		<script type="text/javascript">
 			
-			Websocket.addOpenListener(function()
-			{
+			Websocket.addOpenListener(function() {
 				var users = new MenuEntry("Benutzer");
-				var login = new MenuEntry("Einloggen", function() 
-				{
-					alert("Lorem");
+				var login = new MenuEntry("Einloggen", function() {
+					Content.setContent({
+						heading : "Login",
+						html : $("#templateLogin").html(),
+						onAttached : function(node) {
+							node.find(":button").click(function() {
+								Websocket.send("Login", {
+									name: node.find("input[name='name']").val(),
+									password: node.find("input[name='password']").val()
+								}, function(response) {
+									if(response.succeeded) {
+										Menu.clear();
+									}
+										alert(response.succeeded);
+								});
+							});
+						}
+					});
 				});
-				var register = new MenuEntry("Registrieren", function() 
-				{
-					Content.setContent(
-					{
+				var register = new MenuEntry("Registrieren", function()  {
+					Content.setContent({
 						heading : "Registrieren",
 						html : $("#templateRegister").html(),
 						onAttached : function(node) { 
@@ -82,19 +94,15 @@
 								});
 							});
 						},
-						onDetached : function(node) { }
 					});
 				});
 				users.addEntry(login);
 				users.addEntry(register);
 				Menu.addEntry(users);
 				Menu.refresh();
-				Content.setContent(
-				{
+				Content.setContent({
 					heading : "Verbunden",
-					html : $("<p>Die Verbindung zum Server wurde erfolgreich hergestellt.</p>"),
-					onAttached : function(node) { },
-					onDetached : function(node) { }
+					html : $("<p>Die Verbindung zum Server wurde erfolgreich hergestellt.</p>")
 				});
 			});
 			

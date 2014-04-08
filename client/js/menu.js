@@ -13,11 +13,14 @@ MenuEntry.prototype =  {
 	}
 };
 
-Menu = 
-{
+Menu = {
 	entries : [],
 	refresh: function()  {
 		Menu.redraw();
+	},
+	clear : function() {
+		Menu.entries = [];
+		Menu.refresh();
 	},
 	addEntry : function(entry) {
 		this.entries.push(entry);
