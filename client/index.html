@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset='utf-8' />
+		<link rel="stylesheet/less" type="text/css" href="style/colors.less" />
+		<link rel="stylesheet/less" type="text/css" href="style/content.less" />
+		<link rel="stylesheet/less" type="text/css" href="style/header.less" />
+		<link rel="stylesheet/less" type="text/css" href="style/widgets.less" />
+		<link rel="stylesheet/less" type="text/css" href="style/page.less" />
+		<link rel="stylesheet/less" type="text/css" href="style/navigation.less" />
+		<script type="text/javascript" src="lib/jquery.js"></script>
+		<script type="text/javascript" src="lib/less.js"></script>
+		<script type="text/javascript" src="host.js"></script>
+		<script type="text/javascript" src="websocket.js"></script>
+		<script type="text/javascript" src="menu.js"></script>
+		<script type="text/javascript" src="content.js"></script>
+		<script type="text/javascript" src="haushalt.js"></script>
+	</head>
+	<body>
+		<div id="header">
+			<div class="info">
+				Eingeloggt als: Max, Familie Mustermann
+			</div>
+			<div id="navigation">
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div id="wrapper">
+			<div id="content">
+				<h1>Laden...</h1>
+				<div id="contentText">
+					<p>Bitte warten Sie, während eine Verbindung zum Server aufgebaut wird.</p>
+				</div>
+			</div>
+			<div id="widgets">
+				<div>
+					<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>
+				</div>
+				<div>
+					<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>
+				</div>
+			</div>
+		</div>
+		<script type="text/html">
+		</script>
+		<script type="text/javascript">
+			var lorem = new MenuEntry("Lorem", function() 
+			{
+				alert("Lorem");
+			});
+			var ipsum = new MenuEntry("Ipsum");
+			var dolor = new MenuEntry("Dolor", function() 
+			{
+				alert("Dolor");
+			});
+			lorem.addEntry(dolor);
+			Menu.addEntry(lorem);
+			Menu.addEntry(ipsum);
+			ipsum.addEntry(new MenuEntry("Sit", function() 
+			{
+				alert("Sit");
+			}));
+			ipsum.addEntry(new MenuEntry("Amet"));
+			lorem.addEntry(new MenuEntry("Hallo"));
+			dolor.addEntry(new MenuEntry("Kuchen", function() 
+			{
+				alert("Kuchen");
+			}));
+			dolor.addEntry(new MenuEntry("Kekse", function() 
+			{
+				Content.setContent(
+				{
+					heading : "Hallo",
+					html : "<h2>Hallo</h2><p>Test</p>",
+					onAttached : function()
+					{
+						alert("Ich bin da :)");
+					},
+					onDetached : function()
+					{
+						alert("Du tötest mich :'(");
+					}
+				});
+			}));
+			Menu.refresh();
+			
+			
+		</script>
+	</body>
+</html>

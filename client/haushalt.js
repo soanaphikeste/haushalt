@@ -1,0 +1,3 @@
+Haushalt = {
+	loggedIn : false
+};

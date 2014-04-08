@@ -1,0 +1,111 @@
+@import "colors.less";
+
+#navigation {
+	padding: 0px;
+	float:left;
+}
+
+#navigation ul {
+	list-style: none;
+	margin: 0;
+	padding-left: 0;
+	margin-left: 10px;
+	float: left;
+}
+
+#navigation ul li {
+	background-color: @navigationDark;
+	color: white;
+	overflow: hidden;
+	
+	float: left;
+	width: 150px;
+	height: 32px;
+	padding-left: 10px;
+	margin-right: 5px;
+	border-bottom: 4px solid @navigationBorder;
+}
+
+
+#navigation ul li:hover {
+	background-color: @navigationLight;
+	color: black;
+	overflow: visible;
+}
+
+/*
+ * Submenus Level 1
+ */
+ 
+ 
+#navigation ul li ul {
+	opacity: 0;
+	transition: opacity 0.5s;
+	-moz-transition: opacity 0.5s;
+	-o-transition: opacity 0.5s;
+	-webkit-transition: opacity 0.5s;
+	margin-left: -10px;
+	margin-top: -2px;
+	padding-top: 9px;
+}
+
+
+#navigation ul li:hover ul {
+	opacity: 1;
+}
+
+#navigation ul li ul li {
+	float: left;
+	overflow: hidden;
+	border: none;
+}
+
+#navigation ul li ul li:first-child {
+	border-top: 4px solid @navigationBorder;
+}
+
+#navigation ul li ul li:last-child {
+	border-bottom: 4px solid @navigationBorder;
+}
+
+#navigation ul li ul li:hover {
+	overflow: visible;
+}
+
+/*
+ * Submenus Level 2
+ */
+ 
+#navigation ul li ul li div  {
+	width: 305px;
+}
+
+#navigation ul li ul li ul {
+	float: right;
+	width: 150px;
+	margin-top: -13px;
+	padding-left: 5px;
+}
+ 
+#navigation ul li:hover ul li ul {
+	opacity: 0;
+	transition: opacity 0.5s;
+	-moz-transition: opacity 0.5s;
+	-o-transition: opacity 0.5s;
+	-webkit-transition: opacity 0.5s;
+}
+
+
+#navigation ul li:hover ul li:hover ul {
+	opacity: 1;
+}
+
+#navigation a
+{
+	color: white;
+	text-decoration: none;
+	display: block;
+	width: 150px;
+	float: left;
+}
+
