@@ -17,9 +17,6 @@ Menu =
 {
 	entries : [],
 	refresh: function()  {
-		var main = new MenuEntry("Hallo");
-		main.addEntry(new MenuEntry("Hallo2"));
-		Menu.entries.push(main);
 		Menu.redraw();
 	},
 	addEntry : function(entry) {

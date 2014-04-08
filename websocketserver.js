@@ -2,6 +2,7 @@
  * Imports 
  */
 var WebSocketServer = require('ws').Server;
+var Websocket = require("./websocket");
 var fs = require("fs"); //Import tools for manipulating filesystem
 
 /*

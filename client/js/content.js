@@ -8,10 +8,11 @@ Content =  {
 		setTimeout(function() {
 			content.html("");
 			content.append("<h1>" + obj.heading + "</h1>");
-			content.append($("<div id='contentText'></div>").append(obj.html));
+			var root = $("<div id='contentText'></div>").append(obj.html);
+			content.append(root);
 			content.css({"opacity" : "1"});
 			if(obj.onAttached !== undefined)
-				obj.onAttached();
+				obj.onAttached(root);
 		}, 200);
 	}
 };

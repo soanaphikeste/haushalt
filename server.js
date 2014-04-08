@@ -22,7 +22,7 @@ var Server = {
 		Households.init();
 	},
 	newClient : function(conn) {
-		clients.push(new Client(conn, this));
+		this.clients.push(new Client(conn, this));
 	},
 	deleteClient : function(client) {
 		//TODO: Remove this client from the list of active clients

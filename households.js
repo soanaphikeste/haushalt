@@ -44,13 +44,19 @@ Households = {
 		}
 	},
 	register: function(name, password) {
-		households[name] = new Household(name, password);
+		if(this.households[name] === undefined) {
+			this.households[name] = new Household(name, password);
+			this.triggerChanged();
+			return true;
+		}
+		else
+			return false;
 	},
 	checkLogin : function(name, password) {
-		return households[name] !== undefined && households[name].checkPassword(password);
+		return this.households[name] !== undefined && this.households[name].checkPassword(password);
 	},
 	getHousehold : function(name) {
-		return households[name];
+		return this.households[name];
 	},
 	triggerChanged : function() {
 		this.changed = true;

@@ -41,55 +41,60 @@
 				</div>
 			</div>
 		</div>
-		<script type="text/html">
+		<script type="text/html" id="templateRegister">
+			<div class="form">
+				<p>Hier können Sie einen neuen Haushalt anlegen.</p>
+				<p><label>Name:</label><input name="name" type="text" /></p>
+				<p><label>Passwort:</label><input name="password" type="text" /></p>
+				<p><button>Registrieren</button></p>
+			</div>
+		</script>
+		<script type="text/html" id="templateLogin">
+			<div class="form">
+				<p>Hier können Sie sich in einen bestehenden Haushalt einloggen.</p>
+				<p><label>Name:</label><input name="name" type="text" /></p>
+				<p><label>Passwort:</label><input name="password" type="text" /></p>
+				<p><button>Login</button></p>
+			</div>
 		</script>
 		<script type="text/javascript">
-			var lorem = new MenuEntry("Lorem", function() 
-			{
-				alert("Lorem");
-			});
-			var ipsum = new MenuEntry("Ipsum");
-			var dolor = new MenuEntry("Dolor", function() 
-			{
-				alert("Dolor");
-			});
-			lorem.addEntry(dolor);
-			Menu.addEntry(lorem);
-			Menu.addEntry(ipsum);
-			ipsum.addEntry(new MenuEntry("Sit", function() 
-			{
-				alert("Sit");
-			}));
-			ipsum.addEntry(new MenuEntry("Amet"));
-			lorem.addEntry(new MenuEntry("Hallo"));
-			dolor.addEntry(new MenuEntry("Kuchen", function() 
-			{
-				alert("Kuchen");
-			}));
-			dolor.addEntry(new MenuEntry("Kekse", function() 
-			{
-				Content.setContent(
-				{
-					heading : "Hallo",
-					html : "<h2>Hallo</h2><p>Test</p>",
-					onAttached : function()
-					{
-						alert("Ich bin da :)");
-					},
-					onDetached : function()
-					{
-						alert("Du tötest mich :'(");
-					}
-				});
-			}));
-			Menu.refresh();
+			
 			Websocket.addOpenListener(function()
 			{
-				console.log("Hallo");
-				Websocket.send("Hallo", {
-						Hallo: "Welt"
-				}, function(obj) {
-					console.log("Everything went fine!");
+				var users = new MenuEntry("Benutzer");
+				var login = new MenuEntry("Einloggen", function() 
+				{
+					alert("Lorem");
+				});
+				var register = new MenuEntry("Registrieren", function() 
+				{
+					Content.setContent(
+					{
+						heading : "Registrieren",
+						html : $("#templateRegister").html(),
+						onAttached : function(node) { 
+							node.find(":button").click(function() {
+								Websocket.send("Register", {
+									name: node.find("input[name='name']").val(),
+									password: node.find("input[name='password']").val()
+								}, function(response) {
+									alert(response.succeeded);
+								});
+							});
+						},
+						onDetached : function(node) { }
+					});
+				});
+				users.addEntry(login);
+				users.addEntry(register);
+				Menu.addEntry(users);
+				Menu.refresh();
+				Content.setContent(
+				{
+					heading : "Verbunden",
+					html : $("<p>Die Verbindung zum Server wurde erfolgreich hergestellt.</p>"),
+					onAttached : function(node) { },
+					onDetached : function(node) { }
 				});
 			});
 			
