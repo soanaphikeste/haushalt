@@ -19,7 +19,6 @@
 	<body>
 		<div id="header">
 			<div class="info">
-				Eingeloggt als: Max, Familie Mustermann
 			</div>
 			<div id="navigation">
 			</div>
@@ -57,10 +56,68 @@
 				<p><button>Login</button></p>
 			</div>
 		</script>
+		<script type="text/html" id="templateAddUser">
+			<div class="form">
+				<p>Fügen Sie ein neues Familienmitglied hinzu:</p>
+				<p><label>Name:</label><input name="name" type="text" /></p>
+				<p><label>Passwort:</label><input name="password" type="text" /></p>
+				<p><button>Login</button></p>
+			</div>
+		</script>
+		<script type="text/html" id="templateListUsers">
+				<p>Alle Familienmitglieder:</p>
+				<table>
+					<tr><td>Name</td></tr>
+				
+				</table>
+		</script>
 		<script type="text/javascript">
-			
+			function enterHouseholdState() {
+				Menu.clear();
+				var management = new MenuEntry("Verwaltung");
+				var users = new MenuEntry("Familienmitglieder");
+				var add = new MenuEntry("Hinzufügen", function() {
+					Content.setContent({
+						heading : "Familienmitglied Hinzufügen",
+						html : $("#templateAddUser").html(),
+						onAttached : function(node) {
+							node.find(":button").click(function() {
+								Websocket.send("AddUser", {
+									name: node.find("input[name='name']").val(),
+									password: node.find("input[name='password']").val()
+								}, function(response) {
+									alert(response.okay);
+								});
+							});
+						}
+					});
+				});
+				var login = new MenuEntry("Anmelden", function() {
+					
+				});
+				var list = new MenuEntry("Anzeigen", function() {
+					Content.setContent({
+						heading : "Familienmitglieder",
+						html : $("#templateListUsers").html(),
+						onAttached : function(node) {
+							var table = node.find("table");
+							Websocket.send("ListUsers", {}, function(obj) {
+								for(var i = 0; i < obj.users.length; i++) {
+									table.append("<tr><td>" + obj.users[i].name + "</td></tr>");
+								}
+							});
+						}
+					});
+				});
+				users.addEntry(add);
+				users.addEntry(login);
+				users.addEntry(list);
+				management.addEntry(users);
+				Menu.addEntry(management);
+				Menu.refresh();
+			}
 			Websocket.addOpenListener(function() {
-				var users = new MenuEntry("Benutzer");
+				var households = new MenuEntry("Haushalte");
 				var login = new MenuEntry("Einloggen", function() {
 					Content.setContent({
 						heading : "Login",
@@ -71,10 +128,10 @@
 									name: node.find("input[name='name']").val(),
 									password: node.find("input[name='password']").val()
 								}, function(response) {
-									if(response.succeeded) {
-										Menu.clear();
+									if(response.okay) {
+										enterHouseholdState();
 									}
-										alert(response.succeeded);
+									alert(response.okay);
 								});
 							});
 						}
@@ -90,15 +147,15 @@
 									name: node.find("input[name='name']").val(),
 									password: node.find("input[name='password']").val()
 								}, function(response) {
-									alert(response.succeeded);
+									alert(response.okay);
 								});
 							});
 						},
 					});
 				});
-				users.addEntry(login);
-				users.addEntry(register);
-				Menu.addEntry(users);
+				households.addEntry(login);
+				households.addEntry(register);
+				Menu.addEntry(households);
 				Menu.refresh();
 				Content.setContent({
 					heading : "Verbunden",

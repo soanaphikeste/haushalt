@@ -2,12 +2,12 @@ module.exports = function(socket, server) {
 	socket.addListener("Register", function(obj) {
 		if(server.households.register(obj.name, obj.password)) {
 			return {
-				succeeded: true
+				okay: true
 			};
 		}
 		else {
 			return {
-				succeeded: false
+				okay: false
 			};
 		}
 	});
@@ -15,12 +15,12 @@ module.exports = function(socket, server) {
 		if(server.households.checkLogin(obj.name, obj.password)) {
 			server.households.getHousehold(obj.name).registerClient(socket);
 			return {
-				succeeded: true
+				okay: true
 			};
 		}
 		else {
 			return {
-				succeeded: false
+				okay: false
 			};
 		}
 	});

@@ -2,34 +2,8 @@
  * Includes
  */
 var fs = require("fs"); //Import tools for manipulating filesystem
-
-/*
- * One single household
- */
-function Household(name, password) {
-	this.data = { //Everything in this subobject will be saved. Everything else will NOT!
-		name : name,
-		password : password
-	};
-	this.changed = true;
-}
-
-Household.prototype = {
-	checkPassword : function(password) {
-		return this.data.password === password;
-	},
-	hasChanged : function() {
-		return this.changed; //TODO: Determine better way of recognizing changes to this object
-	},
-	triggerChange : function() {
-		this.changed = true;
-		Households.triggerChange();
-	},
-	registerClient : function(socket) {
-		
-	}
-};
-
+var Household = require("./household");
+var User = require("./user");
 /*
  * Manages all households
  */
@@ -46,9 +20,14 @@ Households = {
 						if(!err) {
 							var obj = JSON.parse(data);
 							var hhold = new Household();
-							hhold.data = obj;
-							Households.households[obj.name] = hhold;
-							console.log("Household \"" + obj.name + "\" successfully loaded");
+							hhold.data = obj.household;
+							for(var i = 0; i < obj.users.length; i++) {
+								var user = new User();
+								user.data = obj.users[i];
+								hhold.users[user.data.name] = user;
+							}
+							Households.households[hhold.data.name] = hhold;
+							console.log("Household \"" + hhold.data.name + "\" successfully loaded");
 						}
 						else {
 							console.log("Unable to load household");
@@ -65,7 +44,14 @@ Households = {
 		fs.mkdir("households", function(err) {});
 		for(var name in this.households) {
 			if(this.households[name].hasChanged()) {
-				fs.writeFile("households/" + name + ".json", JSON.stringify(this.households[name].data), function(err) {
+				var obj = {
+					household : this.households[name].data,
+					users : []
+				};
+				for(var nick in this.households[name].users) {
+					obj.users.push(this.households[name].users[nick].data);
+				}
+				fs.writeFile("households/" + name + ".json", JSON.stringify(obj), function(err) {
 					if(err) {
 						console.log("Error saving household " + name);
 					}
