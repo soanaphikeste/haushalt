@@ -1,12 +1,100 @@
-Haushalt
-========
-
 Installation: 
---------------
+==============
  1.) Node installieren
-	...
- 4.) Mime installieren:
+ 2.) ws installieren:
+	npm install ws
+ 3.) Mime installieren:
 	npm install mime
- 3.) Starten:
+ 4.) Starten:
 	node server.js
  
+Protokoll:
+==========
+
+Generell:
+----------
+Das Protokoll wird ausschließlich in JSON kommuniziert.
+Es gibt Requests und Responses.
+
+Es gibt 3 Stufen: Gast, Haushalt und Benutzer.
+Gast-Befehle: 
+	Können IMMER ausgeführt werden, auch wenn man nicht eingeloggt ist. 
+	Sie werden im globalen Kontext ausgeführt und betreffen keine Objekte Direkt
+Haushalt:
+	Nachdem man in einen spezifischen Haushalt eingeloggt ist, können auf
+	diesem Haushalt Befehle ausgeführt werden, sie Betreffen die konkrete
+	Instanz des Haushaltes. Gast-Befehle sind immernoch möglich.
+Benutzer:
+	Nachdem man sich in ein Familienmitglied des Haushaltes eingeloggt hat,
+	kann man die Benutzer-Befehle ausführen, sie werden auf der konkreten Instanz
+	des Benutzers ausgeführt. Haushalts- und Gast-Befehle sind immernoch möglich.
+
+
+Gast-Befehle:
+-------------
+Register
+	Attribute: {
+		name: Name des Haushaltes (String),
+		password: Das Passwort (String)
+	}
+	Return: {
+		okay: Ob der Befehl erfolgreich war (Boolean)
+	}
+	Erzeugt einen neuen Haushalt mit Namen "name" und Passwort "password".
+	Der Rückgabewert "okay" ist true, wenn der Haushalt erfolgreich angelegt wurde,
+	sonst false.
+	
+Login
+	Attribute: {
+		name: Name des Haushaltes (String),
+		password: Das Passwort (String)
+	}
+	Return: {
+		okay: Ob der Befehl erfolgreich war (Boolean)
+	}
+	Meldet einen Haushalt an. Wenn der Login korrekt ist, betritt der Benutzer die
+	Haushalts-Ebene und hat Zugriff auf Haushalts-Befehle.
+	Der Rückgabewert "okay" ist true, wenn der Login erfolgreich war,
+	sonst false.
+	
+Haushalt-Befehle:
+-----------------
+AddUser
+	Attribute: {
+		name: Name des Benutzers (String),
+		password: Das Passwort (String)
+	}
+	Return: {
+		okay: Ob der Befehl erfolgreich war (Boolean)
+	}
+	Fügt dem Haushalt einen neuen Benutzer hinzu.
+	Der Rückgabewert "okay" ist true, wenn der Benutzer angelegt wurde,
+	sonst false.
+	
+LoginUser
+	Attribute: {
+		name: Name des Benutzers (String),
+		password: Das Passwort (String)
+	}
+	Return: {
+		okay: Ob der Befehl erfolgreich war (Boolean)
+	}
+	Meldet einen Benutzer im Haushalt an. War der Befehl erfolgreich, wir die
+	Benutzer-Ebene betreten und der Benutzer hat zugriff auf die Benutzer-Befehle.
+	Der Rückgabewert "okay" ist true, wenn der Login erfolgreich war,
+	sonst false.
+	
+ListUsers
+	Attribute: { }
+	Return: {
+		users : [
+			{
+				name : Name des Benutzers (String)
+			}, ...
+		]
+	}
+	Gibt eine ungeordnete Liste aller Benutzer des aktuellen Haushaltes an.
+	Die Liste wird im primären Attribut "users" als Array gespeichert.
+	Das Array beinhaltet Objekte mit dem Attribut "name", das den Namen des
+	Benutzers darstellt.
+	
