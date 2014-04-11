@@ -1,12 +1,15 @@
 Installation: 
 ==============
- 1.) Node installieren
+ 1.) Node installieren:
+	apt-get install node
  2.) ws installieren:
 	npm install ws
  3.) Mime installieren:
 	npm install mime
  4.) Starten:
 	node server.js
+ 5.) Im Browser öffnen:
+	http://localhost:8080
  
 Protokoll:
 ==========

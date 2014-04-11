@@ -8,7 +8,8 @@ var User = require("./user");
 function Household(name, password) {
 	this.data = { //Everything in this subobject will be saved. Everything else will NOT!
 		name : name,
-		password : password
+		password : password,
+		groceries : []
 	};
 	this.changed = true;
 	this.users = {}; //Will be saved
@@ -25,6 +26,24 @@ Household.prototype = {
 	triggerChanged : function() {
 		this.changed = true;
 		Households.triggerChanged();
+	},
+	addGrocery : function(name, amount, user, recipe) {
+		this.data.groceries.push({
+			name: name,
+			amount: amount, 
+			user: user,
+			recipe: recipe,
+			checked : false
+		});
+		//TODO: Broadcast
+	},
+	checkGrocery : function(index) {
+		this.data.groceries[index].checked = true;
+		//TODO: Broadcast
+	},
+	clearGrocery : function() {
+		this.data.groceries = [];
+		//TODO: Broadcast
 	},
 	registerClient : function(socket) {
 		this.sockets.push(socket);
