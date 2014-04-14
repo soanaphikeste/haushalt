@@ -13,7 +13,6 @@ User = {
 			name: name,
 			password: password
 		}, function(response) {
-			alert(response.okay);
 			if(response.okay) {
 				setCookie("UserName", name, 365);
 				setCookie("UserPassword", password, 365);
@@ -22,6 +21,7 @@ User = {
 			else {
 				deleteCookie("UserName");
 				deleteCookie("UserPassword");
+				alert(response.okay);
 			}
 		});	
 	},

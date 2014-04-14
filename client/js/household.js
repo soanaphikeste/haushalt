@@ -36,8 +36,8 @@ Household = {
 			else {
 				deleteCookie("HouseholdName");
 				deleteCookie("HouseholdPassword");
+				alert(response.okay);
 			}
-			alert(response.okay);
 		});	
 	},
 	checkCookieLogin : function() {

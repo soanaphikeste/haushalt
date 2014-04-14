@@ -1,14 +1,15 @@
 <p>Einkaufsliste:</p>
-<table>
+<table style="width: 760px;">
 	<tr class="head">
 		<td>Name</td>
 		<td>Anzahl</td>
 		<td>Von</td>
+		<td style="width: 60px;"></td>
+	</tr>
+	<tr>
+		<td><input name="name" type="text" size="50"/></td>
+		<td><input name="amount" type="text" size="5" /></td>
+		<td id="colname"></td>
+		<td><button>Eintragen</button></td>
 	</tr>
 </table>
-<div class="form">
-	<p>Eintrag ergänzen</p>
-	<p><label>Name:</label><input name="name" type="text" /></p>
-	<p><label>Anzahl:</label><input name="amount" type="text" /></p>
-	<p><button>Okay</button></p>
-</div>

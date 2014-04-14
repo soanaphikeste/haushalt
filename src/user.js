@@ -26,6 +26,10 @@ User.prototype = {
 			self.household.checkGrocery(obj.index);
 			return { };
 		});
+		socket.addListener("UncheckGrocery", function(obj) {
+			self.household.uncheckGrocery(obj.index);
+			return { };
+		});
 		socket.addListener("ClearGrocery", function(obj) {
 			self.household.checkGrocery(obj.index);
 			return { };

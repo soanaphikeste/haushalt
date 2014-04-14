@@ -50,6 +50,13 @@ Household.prototype = {
 		});
 		this.triggerChanged();
 	},
+	uncheckGrocery : function(index) {
+		this.data.groceries[index].checked = false;
+		this.broadcast("GroceryUncheck", {
+			index: index
+		});
+		this.triggerChanged();
+	},
 	clearGrocery : function() {
 		this.data.groceries = [];
 		this.broadcast("GroceryClear", { });

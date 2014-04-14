@@ -47,7 +47,7 @@ Websocket = {
 	},
 	removeListener : function(request) {
 		this.requests[request] = undefined;
-		console.log("Rmove listener for " +request);
+		console.log("Rmove listener for ");
 	}
 };
 
