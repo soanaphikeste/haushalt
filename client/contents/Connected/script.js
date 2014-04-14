@@ -1,0 +1,3 @@
+Content.define({
+	heading : "Verbunden"
+});
