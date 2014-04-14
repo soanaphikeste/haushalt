@@ -33,7 +33,7 @@ User.prototype = {
 				list.push({
 					name : grocery.name,
 					amount: grocery.amount,
-					user: grocery.user.data.name,
+					user: grocery.user,
 					checked : grocery.checked
 				});
 			}

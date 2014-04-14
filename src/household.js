@@ -31,15 +31,15 @@ Household.prototype = {
 		var obj = {
 			name: name,
 			amount: amount, 
-			user: user,
+			user: user.data.name,
 			checked : false
 		};
 		this.data.groceries.push(obj);
 		this.broadcast("GroceryAdd", {
-			name : name,
-			amount : amount,
-			user : user.data.name,
-			checked: false
+			name : obj.name,
+			amount : obj.amount,
+			user: obj.user,
+			checked: obj.checked
 		});
 		this.triggerChanged();
 	},
