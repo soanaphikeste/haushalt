@@ -1,4 +1,7 @@
 function Websocket(ws) {
+	this.closeStack = [];
+	this.openStack = [];
+	this.counter = 0;
 	var self = this;
 	this.socket = ws;
 	this.socket.on('message', function(msg) {
@@ -26,18 +29,13 @@ function Websocket(ws) {
 	this.socket.on('close', function() {
 		for(var i = 0; i < self.closeStack.length; i++) {
 			self.closeStack[i]();
-			console.log("Just one event fired?");
 		}
-		console.log("Just one disconnect");
 	});
 };
 
 Websocket.prototype = {
-	openStack : [],
-	closeStack : [],
 	requests: {},
 	responses : {},
-	counter : 0,
 	addOpenListener : function(listener) {
 		this.openStack.push(listener);
 	},
