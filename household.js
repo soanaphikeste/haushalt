@@ -35,17 +35,25 @@ Household.prototype = {
 			checked : false
 		};
 		this.data.groceries.push(obj);
-		this.broadcast("GroceryAdd", obj);
+		this.broadcast("GroceryAdd", {
+			name : name,
+			amount : amount,
+			user : user.data.name,
+			checked: false
+		});
+		this.triggerChanged();
 	},
 	checkGrocery : function(index) {
 		this.data.groceries[index].checked = true;
 		this.broadcast("GroceryCheck", {
 			index: index
 		});
+		this.triggerChanged();
 	},
 	clearGrocery : function() {
 		this.data.groceries = [];
 		this.broadcast("GroceryClear", { });
+		this.triggerChanged();
 	},
 	registerClient : function(socket) {
 		this.sockets.push(socket);
@@ -103,7 +111,8 @@ Household.prototype = {
 	},
 	broadcast : function(request, obj) {
 		for(var socket in this.sockets) {
-			socket.send(request, obj);
+			//console.log(this.sockets[socket]);
+			this.sockets[socket].send(request, obj);
 		}
 	}
 	

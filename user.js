@@ -28,11 +28,13 @@ User.prototype = {
 		});
 		socket.addListener("GetGroceries", function(obj) {
 			var list = [];
-			for(var grocery in self.household.data.groceries) {
+			for(var g in self.household.data.groceries) {
+				var grocery = self.household.data.groceries[g];
 				list.push({
 					name : grocery.name,
 					amount: grocery.amount,
-					user: grocery.user.data.name
+					user: grocery.user.data.name,
+					checked : grocery.checked
 				});
 			}
 			return {
@@ -42,7 +44,7 @@ User.prototype = {
 	},
 	broadcast : function(request, obj) {
 		for(var socket in this.sockets) {
-			socket.send(request, obj);
+			this.sockets[socket].send(request, obj);
 		}
 	}
 };
