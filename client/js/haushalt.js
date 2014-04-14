@@ -1,3 +1,0 @@
-Haushalt = {
-	loggedIn : false
-};

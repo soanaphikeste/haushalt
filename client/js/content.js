@@ -57,5 +57,13 @@ Content =  {
 	},
 	define : function(obj) {
 		this._content = obj;
+	},
+	setInfo : function(text) {
+		var node = $('#headinfo');
+		node.css({"opacity" : "0"});
+		setTimeout(function() {
+			node.html(text);
+			node.css({"opacity" : "1"});
+		}, 200);
 	}
 };

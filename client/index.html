@@ -9,16 +9,19 @@
 		<link rel="stylesheet/less" type="text/css" href="style/page.less" />
 		<link rel="stylesheet/less" type="text/css" href="style/navigation.less" />
 		<script type="text/javascript" src="lib/jquery.js"></script>
+		<script type="text/javascript" src="js/cookies.js"></script>
 		<script type="text/javascript" src="lib/less.js"></script>
 		<script type="text/javascript" src="host.js"></script>
 		<script type="text/javascript" src="js/websocket.js"></script>
 		<script type="text/javascript" src="js/menu.js"></script>
 		<script type="text/javascript" src="js/content.js"></script>
-		<script type="text/javascript" src="js/haushalt.js"></script>
+		<script type="text/javascript" src="js/household.js"></script>
+		<script type="text/javascript" src="js/user.js"></script>
 	</head>
 	<body>
 		<div id="header">
-			<div class="info">
+			<div class="info" id="headinfo">
+				Nicht angemeldet
 			</div>
 			<div id="navigation">
 			</div>
@@ -41,35 +44,6 @@
 			</div>
 		</div>
 		<script type="text/javascript">
-			function enterUserState() {
-				var grocery = new MenuEntry("Einkaufen", function() {
-					Content.setContent("GroceryList");
-				});
-				Menu.addEntry(grocery);
-				Menu.refresh();
-			}
-			
-			function enterHouseholdState() {
-				Menu.clear();
-				
-				var management = new MenuEntry("Verwaltung");
-				var users = new MenuEntry("Familienmitglieder");
-				var add = new MenuEntry("Hinzufügen", function() {
-					Content.setContent("UserAdd");
-				});
-				var login = new MenuEntry("Anmelden", function() {
-					Content.setContent("UserLogin");
-				});
-				var list = new MenuEntry("Anzeigen", function() {
-					Content.setContent("UserList");
-				});
-				users.addEntry(add);
-				users.addEntry(login);
-				users.addEntry(list);
-				management.addEntry(users);
-				Menu.addEntry(management);
-				Menu.refresh();
-			}
 			Websocket.addOpenListener(function() {
 				var households = new MenuEntry("Haushalte");
 				var login = new MenuEntry("Einloggen", function() {
@@ -83,8 +57,8 @@
 				Menu.addEntry(households);
 				Menu.refresh();
 				Content.setContent("Connected");
+				Household.checkCookieLogin();
 			});
-			
 		</script>
 	</body>
 </html>
