@@ -27,12 +27,11 @@ Household.prototype = {
 		this.changed = true;
 		Households.triggerChanged();
 	},
-	addGrocery : function(name, amount, user, recipe) {
+	addGrocery : function(name, amount, user) {
 		var obj = {
 			name: name,
 			amount: amount, 
 			user: user,
-			recipe: recipe,
 			checked : false
 		};
 		this.data.groceries.push(obj);
@@ -88,7 +87,7 @@ Household.prototype = {
 			return false;
 		}
 		else {
-			this.users[name] = new User(name, password);
+			this.users[name] = new User(this, name, password);
 			this.triggerChanged();
 			return true;
 		}

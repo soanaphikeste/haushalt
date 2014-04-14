@@ -8,23 +8,36 @@ function User(household, name, password) {
 }
 
 User.prototype = {
-	var self = this;
 	checkPassword : function(password) {
 		return this.data.password === password;
 	},
 	registerClient : function(socket) {
+		var self = this;
 		this.sockets.push(socket);
 		socket.addListener("AddGrocery", function(obj) {
-			self.household.addGrocery(obj.name, obj.amount, self, undefined);
-			return { }
+			self.household.addGrocery(obj.name, obj.amount, self);
+			return { };
 		});
 		socket.addListener("CheckGrocery", function(obj) {
 			self.household.checkGrocery(obj.index);
-			return { }
+			return { };
 		});
 		socket.addListener("ClearGrocery", function(obj) {
 			self.household.checkGrocery(obj.index);
-			return { }
+			return { };
+		});
+		socket.addListener("GetGroceries", function(obj) {
+			var list = [];
+			for(var grocery in self.household.data.groceries) {
+				list.push({
+					name : grocery.name,
+					amount: grocery.amount,
+					user: grocery.user.data.name
+				});
+			}
+			return {
+				groceries : list
+			};
 		});
 	},
 	broadcast : function(request, obj) {

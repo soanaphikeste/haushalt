@@ -61,6 +61,14 @@
 				<p>Fügen Sie ein neues Familienmitglied hinzu:</p>
 				<p><label>Name:</label><input name="name" type="text" /></p>
 				<p><label>Passwort:</label><input name="password" type="text" /></p>
+				<p><button>Hinzufügen</button></p>
+			</div>
+		</script>
+		<script type="text/html" id="templateLoginUser">
+			<div class="form">
+				<p>Melden Sie sich in der Familie an:</p>
+				<p><label>Name:</label><input name="name" type="text" /></p>
+				<p><label>Passwort:</label><input name="password" type="text" /></p>
 				<p><button>Login</button></p>
 			</div>
 		</script>
@@ -71,9 +79,46 @@
 				
 				</table>
 		</script>
+		<script type="text/html" id="templateGroceryList">
+			<p>Einkaufsliste:</p>
+			<table>
+				<tr class="head">
+					<td>Name</td>
+					<td>Anzahl</td>
+					<td>Von</td>
+				</tr>
+			</table>
+			<div class="form">
+				<p>Eintrag ergänzen</p>
+				<p><label>Name:</label><input name="name" type="text" /></p>
+				<p><label>Anzahl:</label><input name="amount" type="text" /></p>
+				<p><button>Okay</button></p>
+			</div>
+		</script>
 		<script type="text/javascript">
+			function enterUserState() {
+				var grocery = new MenuEntry("Einkaufen", function() {
+					Content.setContent({
+						heading : "Einkaufsliste",
+						html : $("#templateGroceryList").html(),
+						onAttached : function(node) {
+							var table = node.find("table");
+							Websocket.send("GetGroceries", {}, function(obj) {
+								for(var grocery in obj.groceries) {
+									table.append("<tr><td>" + grocery.name + "</td><td>x" + grocery.amount + "</td><td>" + grocery.user + "</td></tr>");
+								}
+							});
+						}
+						//TODO: Clear handler in onDetached()
+					});
+				});
+				Menu.addEntry(grocery);
+				Menu.refresh();
+			}
+			
 			function enterHouseholdState() {
 				Menu.clear();
+				
 				var management = new MenuEntry("Verwaltung");
 				var users = new MenuEntry("Familienmitglieder");
 				var add = new MenuEntry("Hinzufügen", function() {
@@ -93,7 +138,23 @@
 					});
 				});
 				var login = new MenuEntry("Anmelden", function() {
-					
+					Content.setContent({
+						heading : "Als Familienmitglied anmelden",
+						html : $("#templateLoginUser").html(),
+						onAttached : function(node) {
+							node.find(":button").click(function() {
+								Websocket.send("LoginUser", {
+									name: node.find("input[name='name']").val(),
+									password: node.find("input[name='password']").val()
+								}, function(response) {
+									alert(response.okay);
+									if(response.okay) {
+										enterUserState();
+									}
+								});
+							});
+						}
+					});
 				});
 				var list = new MenuEntry("Anzeigen", function() {
 					Content.setContent({
