@@ -2,10 +2,10 @@
  * Imports 
  */
 var fs = require("fs"); //Import tools for manipulating filesystem
-var WebServer = require("./webserver");
-var WebsocketServer = require("./websocketserver");
-var Client = require("./client");
-var Households = require("./households");
+var WebServer = require("./src/webserver");
+var WebsocketServer = require("./src/websocketserver");
+var Client = require("./src/client");
+var Households = require("./src/households");
 
 var portWebserver = 8080;
 var portWebsocket = 5560;
