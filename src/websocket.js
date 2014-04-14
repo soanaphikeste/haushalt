@@ -1,4 +1,4 @@
-Websocket = function(ws) {
+function Websocket(ws) {
 	var self = this;
 	this.socket = ws;
 	this.socket.on('message', function(msg) {
@@ -26,7 +26,9 @@ Websocket = function(ws) {
 	this.socket.on('close', function() {
 		for(var i = 0; i < self.closeStack.length; i++) {
 			self.closeStack[i]();
+			console.log("Just one event fired?");
 		}
+		console.log("Just one disconnect");
 	});
 };
 

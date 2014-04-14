@@ -69,11 +69,13 @@ Household.prototype = {
 		this.triggerChanged();
 	},
 	registerClient : function(socket) {
+		console.log("registereed!");
 		this.sockets.push(socket);
 		var self = this;
 		socket.addCloseListener(function() {
 			var index = self.sockets.indexOf(socket);
 			self.sockets.splice(index, 1);
+			console.log("Closelistener called");
 		});
 		socket.addListener("AddUser", function(obj) {
 			var okay;
