@@ -21,29 +21,32 @@ Household.prototype = {
 		return this.data.password === password;
 	},
 	hasChanged : function() {
-		return this.changed; //TODO: Determine better way of recognizing changes to this object
+		return this.changed; 
 	},
 	triggerChanged : function() {
 		this.changed = true;
 		Households.triggerChanged();
 	},
 	addGrocery : function(name, amount, user, recipe) {
-		this.data.groceries.push({
+		var obj = {
 			name: name,
 			amount: amount, 
 			user: user,
 			recipe: recipe,
 			checked : false
-		});
-		//TODO: Broadcast
+		};
+		this.data.groceries.push(obj);
+		this.broadcast("GroceryAdd", obj);
 	},
 	checkGrocery : function(index) {
 		this.data.groceries[index].checked = true;
-		//TODO: Broadcast
+		this.broadcast("GroceryCheck", {
+			index: index
+		});
 	},
 	clearGrocery : function() {
 		this.data.groceries = [];
-		//TODO: Broadcast
+		this.broadcast("GroceryClear", { });
 	},
 	registerClient : function(socket) {
 		this.sockets.push(socket);
@@ -97,6 +100,11 @@ Household.prototype = {
 		}
 		else {
 			return false;
+		}
+	},
+	broadcast : function(request, obj) {
+		for(var socket in this.sockets) {
+			socket.send(request, obj);
 		}
 	}
 	
