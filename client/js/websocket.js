@@ -44,6 +44,10 @@ Websocket = {
 		obj._responseID = this.counter++;
 		obj = JSON.stringify(obj);
 		this.socket.send(obj);
+	},
+	removeListener : function(request) {
+		this.requests[request] = undefined;
+		console.log("Rmove listener for " +request);
 	}
 };
 

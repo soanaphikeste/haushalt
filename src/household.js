@@ -58,6 +58,10 @@ Household.prototype = {
 	registerClient : function(socket) {
 		this.sockets.push(socket);
 		var self = this;
+		socket.addCloseListener(function() {
+			var index = self.sockets.indexOf(socket);
+			self.sockets.splice(index, 1);
+		});
 		socket.addListener("AddUser", function(obj) {
 			var okay;
 			if(self.addUser(obj.name, obj.password))

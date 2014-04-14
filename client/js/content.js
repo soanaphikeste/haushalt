@@ -49,6 +49,8 @@ Content =  {
 				self.scripts[name] = self._content;
 				done(self._content);
 				if(self._content.onLoad !== undefined) self._content.onLoad();
+			}).error(function(obj, err1, err2) {
+				console.log(err1, err2);
 			});
 		}
 		else {

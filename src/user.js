@@ -14,6 +14,10 @@ User.prototype = {
 	registerClient : function(socket) {
 		var self = this;
 		this.sockets.push(socket);
+		socket.addCloseListener(function() {
+			var index = self.sockets.indexOf(socket);
+			self.sockets.splice(index, 1);
+		});
 		socket.addListener("AddGrocery", function(obj) {
 			self.household.addGrocery(obj.name, obj.amount, self);
 			return { };

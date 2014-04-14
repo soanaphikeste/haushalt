@@ -23,15 +23,24 @@ Websocket = function(ws) {
 			self.openStack[i]();
 		}
 	});
+	this.socket.on('close', function() {
+		for(var i = 0; i < self.closeStack.length; i++) {
+			self.closeStack[i]();
+		}
+	});
 };
 
 Websocket.prototype = {
 	openStack : [],
+	closeStack : [],
 	requests: {},
 	responses : {},
 	counter : 0,
 	addOpenListener : function(listener) {
 		this.openStack.push(listener);
+	},
+	addCloseListener : function(listener) {
+		this.closeStack.push(listener);
 	},
 	addListener : function(request, listener) {
 		this.requests[request] = listener;
