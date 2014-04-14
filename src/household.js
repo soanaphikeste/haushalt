@@ -58,7 +58,13 @@ Household.prototype = {
 		this.triggerChanged();
 	},
 	clearGrocery : function() {
+		var tmp = this.data.groceries;
 		this.data.groceries = [];
+		for(var g in tmp) {
+			if(!tmp[g].checked) {
+				this.data.groceries.push(tmp[g]);
+			}
+		}
 		this.broadcast("GroceryClear", { });
 		this.triggerChanged();
 	},

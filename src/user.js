@@ -31,7 +31,7 @@ User.prototype = {
 			return { };
 		});
 		socket.addListener("ClearGrocery", function(obj) {
-			self.household.checkGrocery(obj.index);
+			self.household.clearGrocery(obj.index);
 			return { };
 		});
 		socket.addListener("GetGroceries", function(obj) {
