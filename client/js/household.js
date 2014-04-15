@@ -13,11 +13,17 @@ Household = {
 		var list = new MenuEntry("Anzeigen", function() {
 			Content.setContent("UserList");
 		});
+		this.recipeMenuEntry = new MenuEntry("Rezepte");
+		var listRecipes = new MenuEntry("Anzeigen", function() {
+			Content.setContent("ListRecipes");
+		});
+		this.recipeMenuEntry.addEntry(listRecipes);
 		users.addEntry(add);
 		users.addEntry(login);
 		users.addEntry(list);
 		management.addEntry(users);
 		Menu.addEntry(management);
+		Menu.addEntry(this.recipeMenuEntry);
 		Menu.refresh();
 		Content.setInfo("Familie " + name);
 		User.checkCookieLogin();

@@ -4,6 +4,9 @@ User = {
 		var grocery = new MenuEntry("Einkaufen", function() {
 			Content.setContent("GroceryList");
 		});
+		Household.recipeMenuEntry.addEntry(new MenuEntry("Hinzufügen", function() {
+			Content.setContent("AddRecipe");
+		}));
 		Menu.addEntry(grocery);
 		Menu.refresh();
 		Content.setInfo("Familie " + Household.name + ", " + name);

@@ -20,7 +20,9 @@ Households = {
 						if(!err) {
 							var obj = JSON.parse(data);
 							var hhold = new Household();
-							hhold.data = obj.household;
+							for(var key in obj.household) {
+								hhold.data[key] = obj.household[key];
+							}
 							for(var i = 0; i < obj.users.length; i++) {
 								var user = new User(hhold);
 								user.data = obj.users[i];
