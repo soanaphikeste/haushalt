@@ -58,11 +58,13 @@ Content.define({
 		Websocket.addListener("GroceryCheck", function(obj) {
 			var row = self.rows[obj.index];
 			row.css(self.disabledCSS);
+			row.find("input[type='checkbox']").attr({"checked": true});
 			self.groceries[obj.index].checked = true;
 		});
 		Websocket.addListener("GroceryUncheck", function(obj) {
 			var row = self.rows[obj.index];
 			row.css(self.normalCSS);
+			row.find("input[type='checkbox']").attr({"checked": false});
 			self.groceries[obj.index].checked = false;
 		});
 		Websocket.addListener("GroceryClear", function(obj) {
