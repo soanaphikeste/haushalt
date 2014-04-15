@@ -20,19 +20,19 @@ User.prototype = {
 		});
 		socket.addListener("AddGrocery", function(obj) {
 			self.household.addGrocery(obj.name, obj.amount, self);
-			return { };
 		});
 		socket.addListener("CheckGrocery", function(obj) {
 			self.household.checkGrocery(obj.index);
-			return { };
 		});
 		socket.addListener("UncheckGrocery", function(obj) {
 			self.household.uncheckGrocery(obj.index);
-			return { };
 		});
 		socket.addListener("ClearGrocery", function(obj) {
 			self.household.clearGrocery(obj.index);
-			return { };
+		});
+		socket.addListener("AddRecipe", function(obj) {
+			obj.author = self.data.name;
+			self.household.addRecipe(obj);
 		});
 		socket.addListener("GetGroceries", function(obj) {
 			var list = [];

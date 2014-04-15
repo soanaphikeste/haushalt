@@ -9,7 +9,8 @@ function Household(name, password) {
 	this.data = { //Everything in this subobject will be saved. Everything else will NOT!
 		name : name,
 		password : password,
-		groceries : []
+		groceries : [],
+		recipes : {}
 	};
 	this.changed = true;
 	this.users = {}; //Will be saved
@@ -68,12 +69,38 @@ Household.prototype = {
 		this.broadcast("GroceryClear", { });
 		this.triggerChanged();
 	},
+	addRecipe : function(obj) {
+		var recipe = {
+			name : obj.name,
+			description : obj.description,
+			used : 0,
+			author : obj.author,
+			ingredients : []
+		};
+		for(var i in obj.ingredients) {
+			recipe.ingredients.push(obj.ingredients[i]);
+		}
+		this.data.recipes[recipe.name] = recipe;
+		this.triggerChanged();
+	},
 	registerClient : function(socket) {
 		this.sockets.push(socket);
 		var self = this;
 		socket.addCloseListener(function() {
 			var index = self.sockets.indexOf(socket);
 			self.sockets.splice(index, 1);
+		});
+		socket.addListener("ListRecipes", function(obj) {
+			var list = [];
+			for(var r in self.data.recipes) {
+				list.push(r);
+			}
+			return {
+				list : list
+			}
+		});
+		socket.addListener("GetRecipe", function(obj) {
+			return self.data.recipes[obj.recipe];
 		});
 		socket.addListener("AddUser", function(obj) {
 			var okay;
