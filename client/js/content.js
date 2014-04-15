@@ -13,6 +13,7 @@ Content =  {
 				self.loadScript(name, function(js) {
 					self.current = js;
 					content.html("");
+					location.hash = name;
 					content.append("<h1>" + js.heading + "</h1>");
 					var root = $("<div id='contentText'></div>").append(html);
 					content.append(root);
