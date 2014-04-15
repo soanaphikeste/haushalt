@@ -28,7 +28,7 @@ User.prototype = {
 			self.household.uncheckGrocery(obj.index);
 		});
 		socket.addListener("ClearGrocery", function(obj) {
-			self.household.clearGrocery(obj.index);
+			self.household.clearGrocery();
 		});
 		socket.addListener("AddRecipe", function(obj) {
 			obj.author = self.data.name;
