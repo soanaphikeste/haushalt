@@ -32,7 +32,16 @@ User.prototype = {
 		});
 		socket.addListener("AddRecipe", function(obj) {
 			obj.author = self.data.name;
-			self.household.addRecipe(obj);
+			if(self.household.addRecipe(obj)) {
+				return {
+					okay : true
+				};
+			} 
+			else {
+				return {
+					okay : false
+				};
+			}
 		});
 		socket.addListener("GetGroceries", function(obj) {
 			var list = [];
