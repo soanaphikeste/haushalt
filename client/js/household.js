@@ -15,7 +15,7 @@ Household = {
 		});
 		this.recipeMenuEntry = new MenuEntry("Rezepte");
 		var listRecipes = new MenuEntry("Anzeigen", function() {
-			Content.setContent("ListRecipes");
+			Content.setContent("RecipeList");
 		});
 		this.recipeMenuEntry.addEntry(listRecipes);
 		users.addEntry(add);

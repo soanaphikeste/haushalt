@@ -22,11 +22,6 @@ Content.define({
 			node.find("input[name='name']").val(title);
 			node.find("textarea").val(description);
 			console.log(ingredients);
-			function replaceAll(string, needle, replace) {
-				while(string.indexOf(needle) != -1)
-					string = string.replace(needle, replace);
-				return string;
-			}
 		};
 		
 		function addIngredient() {

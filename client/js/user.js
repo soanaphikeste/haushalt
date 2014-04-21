@@ -5,7 +5,7 @@ User = {
 			Content.setContent("GroceryList");
 		});
 		Household.recipeMenuEntry.addEntry(new MenuEntry("Hinzufügen", function() {
-			Content.setContent("AddRecipe");
+			Content.setContent("RecipeAdd");
 		}));
 		Menu.addEntry(grocery);
 		Menu.refresh();
