@@ -3,11 +3,17 @@ package de.cronosx.haushalt;
 import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
+import java.util.*;
 import java.util.regex.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.util.Base64;
+import android.util.Log;
+import android.util.SparseArray;
 
 /**
  * @author prior This is a wrapped socket that parses the pure byte-input with
@@ -24,6 +30,12 @@ public class Websocket extends Thread {
 	private static Pattern patternOrigin = Pattern.compile("Origin: (.*)");
 	private static Pattern patternHost = Pattern.compile("Host: (.*)");
 
+	private Map<String, RequestListener> requestListeners;
+	private SparseArray<ResponseListener> responseListeners;
+	private int currentID;
+	
+	private List<OpenListener> openListeners;
+	
 	/**
 	 * Creates a new websocket, sets up the streams and starts listening
 	 * <p>
@@ -41,6 +53,10 @@ public class Websocket extends Thread {
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
+		this.currentID = 0;
+		this.requestListeners = new HashMap<String, RequestListener>();
+		this.responseListeners = new SparseArray<ResponseListener>();
+		this.openListeners = new LinkedList<OpenListener>();
 		isInitialized = false;
 		this.socket = socket;
 		this.inputStream = new BufferedInputStream(socket.getInputStream(),
@@ -198,12 +214,12 @@ public class Websocket extends Thread {
 	 */
 	private String decode(byte[] bytes) {
 		if (bytes.length >= 6) {
-			// The first bit represents the type of data that will be delivered
-			// The second bit represents the length
+			// The first byte represents the type of data that will be delivered
+			// The second byte represents the length
 			int length = (bytes[1] & 127);
-			// If the second Bit (length) is 126 there are 2 additional bits
+			// If the second Byte (length) is 126 there are 2 additional bits
 			// used for the length
-			// If the second Bit (length) is 127 there are 8 additional bits
+			// If the second Byte (length) is 127 there are 8 additional bits
 			// used for the length
 			int offset = 2 + (length == 126 ? 2 : length == 127 ? 8 : 0);
 			length = calcLength(bytes);
@@ -306,6 +322,7 @@ public class Websocket extends Thread {
 	 * @return whether the transmission was successfull
 	 */
 	public boolean send(String s) {
+		Log.d("Websocket" ,"Sending: " + s);
 		try {
 			outputStream.write(encode(s));
 			outputStream.flush();
@@ -346,17 +363,89 @@ public class Websocket extends Thread {
 		return isInitialized;
 	}
 	
-
 	private void onOpen() {
-		
+		for(OpenListener l : openListeners) {
+			l.onOpen();
+		}
 	}
 	
 	private void onMessage(String msg) {
-		
+		Log.d("Websocket" ,"Received: " + msg);
+		try {
+			JSONObject jObj = new JSONObject(msg);
+			if(jObj.has("_type"))
+			{
+				String type = jObj.getString("_type");
+				if(type.equals("Request")) {
+					if(jObj.has("_requestID") && jObj.has("_responseID")) {
+						String requestID = jObj.getString("_requestID");
+						String responseID = jObj.getString("_responseID");
+						if(this.requestListeners.containsKey(requestID)) {
+							JSONObject answer = this.requestListeners.get(requestID).onRequest(jObj);
+							if(answer == null) answer = new JSONObject();
+							answer.put("_responseID", responseID);
+							answer.put("_type", "Response");
+							String string = answer.toString();
+							send(string);
+						}
+					}
+				}
+				else if(type.equals("Response")) {
+					if(jObj.has("_responseID")) {
+						int responseID = jObj.getInt("_responseID");
+						ResponseListener l;
+						if((l =this.responseListeners.get(responseID)) != null) {
+							l.onResponse(jObj);
+						}
+					}
+				}
+					
+			}
+		}
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void onClose() {
 		
+	}
+	
+	public void addListener(String request, RequestListener l) {
+		this.requestListeners.put(request, l);
+	}
+	
+	public void send(String requestID, JSONObject jObj, ResponseListener listener) {
+		try {
+			jObj.put("_type", "Request");
+			jObj.put("_requestID", requestID);
+			jObj.put("_responseID", this.currentID++);
+			String string = jObj.toString();
+			send(string);
+		} 
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void addOpenListener(OpenListener listener) {
+		this.openListeners.add(listener);
+	}
+	
+	public void send(String request, JSONObject jObj) {
+		this.send(request, jObj, null);
+	}
+	
+	public static interface RequestListener {
+		public JSONObject onRequest(JSONObject jObj);
+	}
+	
+	public static interface ResponseListener {
+		public void onResponse(JSONObject jObj);
+	}
+	
+	public static interface OpenListener {
+		public void onOpen();
 	}
 }
 
