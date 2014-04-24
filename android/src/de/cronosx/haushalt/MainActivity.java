@@ -9,24 +9,56 @@ import org.json.JSONObject;
 
 import de.cronosx.haushalt.Websocket.OpenListener;
 import de.cronosx.haushalt.Websocket.ResponseListener;
-
 import android.os.Bundle;
 import android.app.Activity;
-<<<<<<< HEAD
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
-=======
 import android.util.Log;
->>>>>>> refs/remotes/origin/master
 import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class MainActivity extends Activity {
 
+	private class DrawerItemClickListener implements ListView.OnItemClickListener {
+	    @Override
+	    public void onItemClick(AdapterView parent, View view, int position, long id) {
+	        selectItem(position);
+	    }
+	}
+
+	/** Swaps fragments in the main content view */
+	private void selectItem(int position) {
+	    // Create a new fragment and specify the planet to show based on position
+//	    Fragment fragment = new PlanetFragment();
+//	    Bundle args = new Bundle();
+//	    args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
+//	    fragment.setArguments(args);
+//
+//	    // Insert the fragment by replacing any existing fragment
+//	    FragmentManager fragmentManager = getFragmentManager();
+//	    fragmentManager.beginTransaction()
+//	                   .replace(R.id.content_frame, fragment)
+//	                   .commit();
+//
+//	    // Highlight the selected item, update the title, and close the drawer
+//	    mDrawerList.setItemChecked(position, true);
+//	    setTitle(mPlanetTitles[position]);
+//	    mDrawerLayout.closeDrawer(mDrawerList);
+	}
+
+	@Override
+	public void setTitle(CharSequence title) {
+//	    mTitle = title;
+//	    getActionBar().setTitle(mTitle);
+	}
+
 
 	String[] actions = {"Einloggen", "Beenden"};
-	DrawerLayout layDrawer;
-	ListView vieList;
+	DrawerLayout layoutDrawer;
+	ListView viewList;
 
 	public static Websocket websocket;
 
@@ -35,16 +67,16 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		Websocket.connect();
+//		Websocket.connect();
 		
-		layDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        vieList = (ListView) findViewById(R.id.menu_drawer);
+		layoutDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        viewList = (ListView) findViewById(R.id.menu_drawer);
 
         // Set the adapter for the list view
-        vieList.setAdapter(new ArrayAdapter<String>(this,
+        viewList.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, actions));
         // Set the list's click listener
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        viewList.setOnItemClickListener(new DrawerItemClickListener());
 
 
 		connect();
@@ -83,7 +115,6 @@ public class MainActivity extends Activity {
 			}
 		});
 		
->>>>>>> refs/remotes/origin/master
 	}
 
 	@Override
