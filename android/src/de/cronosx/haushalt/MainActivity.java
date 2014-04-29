@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 public class MainActivity extends Activity {
@@ -29,7 +30,8 @@ public class MainActivity extends Activity {
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
 	    @Override
 	    public void onItemClick(AdapterView parent, View view, int position, long id) {
-	        selectItem(position);
+	        System.out.println("Click! " + position);
+	    	selectItem(position);
 	    }
 	}
 
@@ -52,13 +54,13 @@ public class MainActivity extends Activity {
         viewList = (ListView) findViewById(R.id.menu_drawer);
 
         // Set the adapter for the list view
-        viewList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, actions));
+        ListAdapter adapter = new ArrayAdapter<String>(this, R.layout.drawer_list_item, actions);
+        viewList.setAdapter(adapter);
+        
         // Set the list's click listener
         viewList.setOnItemClickListener(new DrawerItemClickListener());
 
-        drawerToggle = new ActionBarDrawerToggle(this, layoutDrawer,
-                R.drawable.ic_launcher, R.string.drawer_open, R.string.drawer_close) {
+        drawerToggle = new ActionBarDrawerToggle(this, layoutDrawer, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
 
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
@@ -78,7 +80,9 @@ public class MainActivity extends Activity {
         // Set the drawer toggle as the DrawerListener
         layoutDrawer.setDrawerListener(drawerToggle);
 
-        
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+
 
 //		connect();
 	}
