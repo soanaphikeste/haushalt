@@ -9,12 +9,16 @@ import org.json.JSONObject;
 
 import de.cronosx.haushalt.Websocket.OpenListener;
 import de.cronosx.haushalt.Websocket.ResponseListener;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.res.Configuration;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -27,6 +31,102 @@ public class MainActivity extends Activity {
 	    public void onItemClick(AdapterView parent, View view, int position, long id) {
 	        selectItem(position);
 	    }
+	}
+
+	String[] actions = {"Einloggen", "Beenden"};
+	DrawerLayout layoutDrawer;
+	ListView viewList;
+	Fragment fragCurrent;
+	ActionBarDrawerToggle drawerToggle;
+
+	public static Websocket websocket;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+//		Websocket.connect();
+		
+		layoutDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        viewList = (ListView) findViewById(R.id.menu_drawer);
+
+        // Set the adapter for the list view
+        viewList.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_list_item, actions));
+        // Set the list's click listener
+        viewList.setOnItemClickListener(new DrawerItemClickListener());
+
+        drawerToggle = new ActionBarDrawerToggle(this, layoutDrawer,
+                R.drawable.ic_launcher, R.string.drawer_open, R.string.drawer_close) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                getActionBar().setTitle("No Menu");//fragCurrent.getTag());
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                getActionBar().setTitle(getResources().getText(R.string.drawer_title));
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        layoutDrawer.setDrawerListener(drawerToggle);
+
+        
+
+//		connect();
+	}
+	
+	private void connect() {
+
+		final String host = "localhost";
+		final int port = 5560;
+		(new AsyncTask<Void, Void, Void>(){
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				try {
+					Socket s = new Socket(host, port);
+					websocket = new Websocket(s);
+				} 
+				catch (UnknownHostException e) {
+					e.printStackTrace();
+				} 
+				catch (IOException e) {
+					e.printStackTrace();
+				}
+				websocket.addOpenListener(new OpenListener() {
+					@Override
+					public void onOpen() {
+						System.out.println("Connected!");
+						try {
+							JSONObject jObj = new JSONObject();
+							jObj.put("name", "Test");
+							jObj.put("password", "123");
+							websocket.send("Login", jObj, new ResponseListener() {
+								@Override
+								public void onResponse(JSONObject jObj) {
+									Log.d("Answer", "Received answer: " + jObj.toString());
+								}
+								
+							});
+						} 
+						catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+				});
+				return null;
+			}
+			
+		}).execute();
+		
 	}
 
 	/** Swaps fragments in the main content view */
@@ -54,69 +154,39 @@ public class MainActivity extends Activity {
 //	    mTitle = title;
 //	    getActionBar().setTitle(mTitle);
 	}
+	
+	 @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        drawerToggle.syncState();
+    }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(newConfig);
+    }
 
-	String[] actions = {"Einloggen", "Beenden"};
-	DrawerLayout layoutDrawer;
-	ListView viewList;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (drawerToggle.onOptionsItemSelected(item)) {
+          return true;
+        }
+        // Handle your other action bar items...
 
-	public static Websocket websocket;
+        return super.onOptionsItemSelected(item);
+    }
 
+	    
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-
-//		Websocket.connect();
-		
-		layoutDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        viewList = (ListView) findViewById(R.id.menu_drawer);
-
-        // Set the adapter for the list view
-        viewList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, actions));
-        // Set the list's click listener
-        viewList.setOnItemClickListener(new DrawerItemClickListener());
-
-
-		connect();
+	public boolean onPrepareOptionsMenu (Menu menu){
+		//TODO Menue besetzen
+		return super.onPrepareOptionsMenu(menu);
 	}
 	
-	private void connect() {
-		try {
-			Socket s = new Socket("localhost", 5560);
-			websocket = new Websocket(s);
-		} 
-		catch (UnknownHostException e) {
-			e.printStackTrace();
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		websocket.addOpenListener(new OpenListener() {
-			@Override
-			public void onOpen() {
-				System.out.println("Connected!");
-				try {
-					JSONObject jObj = new JSONObject();
-					jObj.put("name", "Test");
-					jObj.put("password", "123");
-					websocket.send("Login", jObj, new ResponseListener() {
-						@Override
-						public void onResponse(JSONObject jObj) {
-							Log.d("Answer", "Received answer: " + jObj.toString());
-						}
-						
-					});
-				} 
-				catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		
-	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
