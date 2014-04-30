@@ -35,7 +35,7 @@ public class MainActivity extends Activity {
 	    }
 	}
 
-	String[] actions = {"Einloggen", "Beenden"};
+	String[] actions = {"Einloggen", "Registrieren", "Beenden"};
 	DrawerLayout layoutDrawer;
 	ListView viewList;
 	Fragment fragCurrent;
@@ -49,7 +49,6 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 //		Websocket.connect();
-		
 		layoutDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         viewList = (ListView) findViewById(R.id.menu_drawer);
 
