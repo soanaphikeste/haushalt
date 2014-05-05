@@ -7,4 +7,4 @@ android/libs/
 android/assets/
 android/.classpath
 android/.settings/
-android/websockets
+android/websockets/
