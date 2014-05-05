@@ -115,22 +115,22 @@ public class MainActivity extends Activity {
 					websocket.addOpenListener(new OpenListener() {
 						@Override
 						public void onOpen() {
-							System.out.println("Connected!");
-							try {
-								JSONObject jObj = new JSONObject();
-								jObj.put("name", "Test");
-								jObj.put("password", "123");
-								websocket.send("Login", jObj, new ResponseListener() {
-									@Override
-									public void onResponse(JSONObject jObj) {
-										Log.d("Answer", "Received answer: " + jObj.toString());
-									}
-									
-								});
-							} 
-							catch (JSONException e) {
-								e.printStackTrace();
-							}
+//							System.out.println("Connected!");
+//							try {
+//								JSONObject jObj = new JSONObject();
+//								jObj.put("name", "Test");
+//								jObj.put("password", "123");
+//								websocket.send("Login", jObj, new ResponseListener() {
+//									@Override
+//									public void onResponse(JSONObject jObj) {
+//										Log.d("Answer", "Received answer: " + jObj.toString());
+//									}
+//									
+//								});
+//							} 
+//							catch (JSONException e) {
+//								e.printStackTrace();
+//							}
 						}
 					});
 				} 

@@ -19,6 +19,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -235,12 +236,12 @@ public class HouseholdLoginActivity extends Activity {
 
 			SharedPreferences pref = getSharedPreferences("server", MODE_PRIVATE);
 			try {
-				final Websocket socket = new Websocket(new Socket(pref.getString("host", "cronosx.de"), pref.getInt("port", 8080)));
+				final Websocket socket = new Websocket(new Socket("cronosx.de", 5560));
 				socket.addOpenListener(new OpenListener(){
 
 					@Override
 					public void onOpen() {
-						System.out.println("-----------------------------------------------------------------------");
+						System.out.println("-------------------------------------------------------------------");
 						JSONObject jObj = new JSONObject();
 						try {
 							jObj.put("name", txtName.getText().toString());
@@ -249,13 +250,34 @@ public class HouseholdLoginActivity extends Activity {
 						catch (JSONException e) {
 							e.printStackTrace();
 						}
-						
+//						JSONObject jObj = new JSONObject();
+//						
+//						try {
+//							jObj.put("name", "Test");
+//							jObj.put("password", "123");
+//						}
+//						catch (JSONException e1) {
+//							// TODO Auto-generated catch block
+//							e1.printStackTrace();
+//						}
+//						socket.send("Login", jObj, new ResponseListener() {
+//							@Override
+//							public void onResponse(JSONObject jObj) {
+//								Log.d("Answer", "Received answer: " + jObj.toString());
+//							}
+//							
+//						});
 						socket.send("Login", jObj, new ResponseListener(){
 							@Override
 							public void onResponse(JSONObject jObj) {
+								Log.i("Login", "[Login] recieved: " + jObj.toString());
 								try {
 									authTask = null;
-									showProgress(false);
+									HouseholdLoginActivity.this.runOnUiThread(new Runnable(){
+									    public void run(){
+									    	showProgress(false);
+									    }
+									});
 									if (jObj.getBoolean("okay")) {
 										HouseholdLoginActivity.this.runOnUiThread(new Runnable(){
 										    public void run(){
