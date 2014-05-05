@@ -52,6 +52,7 @@ public class Websocket {
 		this.requestListeners = new HashMap<String, RequestListener>();
 		this.responseListeners = new SparseArray<ResponseListener>();
 		this.openListeners = new LinkedList<OpenListener>();
+		this.closeListeners = new LinkedList<CloseListener>();
 	}
 
 
