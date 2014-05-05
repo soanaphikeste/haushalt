@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Haushalt</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="drawer_open">Das Menü ist geöffnet</string>
+    <string name="drawer_close">Das Menü wurde geschlossen</string>
+    <string name="drawer_title">Menü</string>
+    <string name="household_login_name">Haushalt</string>
+    <string name="household_login_passwd">Passwort</string>
+    <string name="household_login_login">Login</string>
+    <string name="household_login_remember_login">Eingeloggt bleiben</string>
+
+</resources>

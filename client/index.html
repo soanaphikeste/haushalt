@@ -64,6 +64,12 @@
 				}
 				Household.checkCookieLogin();
 			});
+			
+			function replaceAll(string, needle, replace) {
+				while(string.indexOf(needle) != -1)
+					string = string.replace(needle, replace);
+				return string;
+			}
 		</script>
 	</body>
 </html>
