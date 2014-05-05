@@ -70,18 +70,24 @@ Household.prototype = {
 		this.triggerChanged();
 	},
 	addRecipe : function(obj) {
-		var recipe = {
-			name : obj.name,
-			description : obj.description,
-			used : 0,
-			author : obj.author,
-			ingredients : []
-		};
-		for(var i in obj.ingredients) {
-			recipe.ingredients.push(obj.ingredients[i]);
+		if(this.data.recipes[recipe.name] === undefined) {
+			var recipe = {
+				name : obj.name,
+				description : obj.description,
+				used : 0,
+				author : obj.author,
+				ingredients : []
+			};
+			for(var i in obj.ingredients) {
+				recipe.ingredients.push(obj.ingredients[i]);
+			}
+			this.data.recipes[recipe.name] = recipe;
+			this.triggerChanged();
+			return true;
 		}
-		this.data.recipes[recipe.name] = recipe;
-		this.triggerChanged();
+		else {
+			return false;
+		}
 	},
 	registerClient : function(socket) {
 		this.sockets.push(socket);
