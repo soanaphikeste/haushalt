@@ -90,7 +90,7 @@ public class MainActivity extends Activity {
         getActionBar().setHomeButtonEnabled(true);
 
 
-//		connect();
+		connect();
 	}
 	
 	@Override
@@ -103,7 +103,7 @@ public class MainActivity extends Activity {
 	
 	private void connect() {
 
-		final String host = "localhost";
+		final String host = "cronosx.de";
 		final int port = 5560;
 		(new AsyncTask<Void, Void, Void>(){
 
@@ -112,6 +112,27 @@ public class MainActivity extends Activity {
 				try {
 					Socket s = new Socket(host, port);
 					websocket = new Websocket(s);
+					websocket.addOpenListener(new OpenListener() {
+						@Override
+						public void onOpen() {
+							System.out.println("Connected!");
+							try {
+								JSONObject jObj = new JSONObject();
+								jObj.put("name", "Test");
+								jObj.put("password", "123");
+								websocket.send("Login", jObj, new ResponseListener() {
+									@Override
+									public void onResponse(JSONObject jObj) {
+										Log.d("Answer", "Received answer: " + jObj.toString());
+									}
+									
+								});
+							} 
+							catch (JSONException e) {
+								e.printStackTrace();
+							}
+						}
+					});
 				} 
 				catch (UnknownHostException e) {
 					e.printStackTrace();
@@ -119,27 +140,7 @@ public class MainActivity extends Activity {
 				catch (IOException e) {
 					e.printStackTrace();
 				}
-				websocket.addOpenListener(new OpenListener() {
-					@Override
-					public void onOpen() {
-						System.out.println("Connected!");
-						try {
-							JSONObject jObj = new JSONObject();
-							jObj.put("name", "Test");
-							jObj.put("password", "123");
-							websocket.send("Login", jObj, new ResponseListener() {
-								@Override
-								public void onResponse(JSONObject jObj) {
-									Log.d("Answer", "Received answer: " + jObj.toString());
-								}
-								
-							});
-						} 
-						catch (JSONException e) {
-							e.printStackTrace();
-						}
-					}
-				});
+				
 				return null;
 			}
 			
