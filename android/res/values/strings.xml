@@ -12,5 +12,6 @@
     <string name="household_login_passwd">Passwort</string>
     <string name="household_login_login">Login</string>
     <string name="household_login_remember_login">Eingeloggt bleiben</string>
+    <string name="household_login_autoRegisterInfo">Wenn Sie noch keinen Account haben, geben Sie hier den Namen Ihres Haushalts und ein Passwort ein und tippen Sie \"Login\". Der Haushalt wird automatisch registriert.</string>
 
 </resources>

@@ -12,6 +12,7 @@ import de.cronosx.haushalt.Websocket.ResponseListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -27,6 +28,8 @@ import android.widget.ListView;
 
 public class MainActivity extends Activity {
 
+	public static final int LOGIN = 1;
+	
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
 	    @Override
 	    public void onItemClick(AdapterView parent, View view, int position, long id) {
@@ -46,6 +49,10 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		Intent login = new Intent(this, HouseholdLoginActivity.class);
+		startActivityForResult(login, LOGIN);
+		
 		setContentView(R.layout.activity_main);
 
 //		Websocket.connect();
@@ -84,6 +91,14 @@ public class MainActivity extends Activity {
 
 
 //		connect();
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(requestCode == LOGIN){
+			//System.out.println("logged in");
+			//TODO Load appropriate data and show
+		}
 	}
 	
 	private void connect() {
