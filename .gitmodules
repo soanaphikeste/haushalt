@@ -1,3 +1,0 @@
-[submodule "android/websockets"]
-	path = android/websockets
-	url = http://cronosx.de:5990/Websocket

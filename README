@@ -186,9 +186,7 @@ AddRecipe
 			}, ...
 		]
 	}
-	Return: { 
-		okay : Ob das Hinzufügen geklappt hat (Boolean)
-	}
+	Return: { }
 	Erstellt ein neues Rezept in der Datenbank. Es wird angenommen, dass 
 	die Mengenangaben des Rezeptes für EINE PORTION gelten.
 	
@@ -218,7 +216,6 @@ GroceryCheck
 	Wird gesendet, wenn ein Benutzer etwas auf der Einkaufsliste abhakt.
 	Der Index verweist auf die Sache im Array, die abgehakt wurde. Siehe auch: "CheckGrocery".
 	Die Sache sollte ausgegraut werden o.Ä.
-	
 GroceryUncheck
 	Attribute: {
 		index : Index der Sache auf der Einkaufsliste, die nicht mehr abgehakt ist (Integer)
@@ -226,7 +223,6 @@ GroceryUncheck
 	Wird gesendet, wenn ein Benutzer etwas auf der Einkaufsliste als nicht mehr abgehakt markiert.
 	Der Index verweist auf die Sache im Array, die geändert wurde. Siehe auch: "CheckGrocery".
 	Die Sache sollte wieder normal dargestellt werden.
-	
 GroceryClear
 	Attribute: { }
 	Wird gesendet wenn jemand die Einkaufsliste "zur Kasse bringt".
@@ -234,7 +230,6 @@ GroceryClear
 	gelöscht werden. Um die Indizes des Arrays konstant und korrekt zu halten
 	ist das löschen unumgänglich.
 	Andere Sachen müssen entsprechend aufgerückt werden. Siehe auch: "CheckGrocery".
-	
 GroceryAdd
 	Attribute {
 		name : Name der Sache auf der Liste (String),
