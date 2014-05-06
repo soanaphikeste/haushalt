@@ -3,19 +3,17 @@ package de.cronosx.haushalt;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.Properties;
 
 import de.cronosx.haushalt.Websocket.OpenListener;
-import de.cronosx.haushalt.Websocket.ResponseListener;
-import android.os.AsyncTask;
+import de.cronosx.haushalt.contents.DisplayFragment;
+import de.cronosx.haushalt.contents.LoginFragment;
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.Intent;
+import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
@@ -23,31 +21,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
 public class MainActivity extends Activity {
 
-	private class DrawerItemClickListener implements ListView.OnItemClickListener {
-	    @Override
-	    public void onItemClick(AdapterView parent, View view, int position, long id) {
-	        System.out.println("Click! " + position);
-	    	selectItem(position);
-	    }
-	}
-
-	String[] actions = {"Einloggen", "Registrieren", "Beenden"};
-	DrawerLayout layoutDrawer;
-	ListView viewList;
-	Fragment fragCurrent;
-	ActionBarDrawerToggle drawerToggle;
-
+	public static final String SAVE_NAME = "user_name";
+	public static final String SAVE_PASSWD = "user_passwd";
+	
 	public static Websocket websocket;
 
 	static{
-		//TODO: Websocket mit Daten aus Configdatei oeffnen
 		try {
-			websocket = new Websocket(new Socket("cronosx.de", 5560));
+			Properties prop = new Properties();
+			prop.load(StaticContextApplication.context.getResources().openRawResource(R.raw.server));
+			websocket = new Websocket(new Socket(prop.getProperty("host"), Integer.parseInt(prop.getProperty("port"))));
 		}
 		catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
@@ -59,35 +48,48 @@ public class MainActivity extends Activity {
 		}
 	}
 	
+	String[] actions = {"Einloggen", "Beenden"};
+	DrawerLayout layoutDrawer;
+	//FrameLayout layoutFrag;
+	ListView viewList;
+	DisplayFragment fragCurrent;
+	ActionBarDrawerToggle drawerToggle;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.activity_main);
 		
-		layoutDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        viewList = (ListView) findViewById(R.id.menu_drawer);
+		//layoutFrag = (FrameLayout) findViewById(R.id.main_content_frame);
+		layoutDrawer = (DrawerLayout) findViewById(R.id.main_drawer_layout);
+        viewList = (ListView) findViewById(R.id.main_menu_drawer);
 
         // Set the adapter for the list view
         ListAdapter adapter = new ArrayAdapter<String>(this, R.layout.drawer_list_item, actions);
         viewList.setAdapter(adapter);
         
         // Set the list's click listener
-        viewList.setOnItemClickListener(new DrawerItemClickListener());
+        viewList.setOnItemClickListener(new ListView.OnItemClickListener() {
+    	    @Override
+    	    public void onItemClick(AdapterView parent, View view, int position, long id) {
+    	    	selectItem(position);
+    	    }
+    	});
 
         drawerToggle = new ActionBarDrawerToggle(this, layoutDrawer, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
 
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                getActionBar().setTitle("No Menu");//fragCurrent.getTag());
+                setTitle(fragCurrent.getTitle(MainActivity.this));
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getActionBar().setTitle(getResources().getText(R.string.drawer_title));
+                setTitle(getResources().getText(R.string.drawer_title));
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
@@ -98,38 +100,9 @@ public class MainActivity extends Activity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 
-
-		//connect();
-	}
-	
-	public static void connect(final String host, final int port) {
-
-		(new AsyncTask<Void, Void, Void>(){
-
-			@Override
-			protected Void doInBackground(Void... params) {
-				try {
-					Socket s = new Socket(host, port);
-					websocket = new Websocket(s);
-					websocket.addOpenListener(new OpenListener() {
-						@Override
-						public void onOpen() {
-							System.out.println("Connected!");
-						}
-					});
-				} 
-				catch (UnknownHostException e) {
-					e.printStackTrace();
-				} 
-				catch (IOException e) {
-					e.printStackTrace();
-				}
-				
-				return null;
-			}
-			
-		}).execute();
-		
+        DisplayFragment frag = new LoginFragment();
+        setTitle(frag.getTitle(this));
+        getFragmentManager().beginTransaction().add(R.id.main_content_frame, frag).commit();
 	}
 
 	/** Swaps fragments in the main content view */
@@ -154,8 +127,7 @@ public class MainActivity extends Activity {
 
 	@Override
 	public void setTitle(CharSequence title) {
-//	    mTitle = title;
-//	    getActionBar().setTitle(mTitle);
+	    getActionBar().setTitle(title);
 	}
 	
 	 @Override
@@ -186,7 +158,13 @@ public class MainActivity extends Activity {
 	    
 	@Override
 	public boolean onPrepareOptionsMenu (Menu menu){
-		//TODO Menue besetzen
+//		if(!layoutDrawer.isDrawerOpen(viewList)){
+//			fragCurrent.getOptionsMenu(this, menu);
+//		}
+//		else{
+//			onCreateOptionsMenu(menu);
+//		}
+		
 		return super.onPrepareOptionsMenu(menu);
 	}
 	

@@ -94,7 +94,7 @@ public class HouseholdLoginActivity extends Activity {
 			}
 		});
 		
-		SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+		SharedPreferences prefs = getSharedPreferences(Constants.loggInPrefs, MODE_PRIVATE);
 		String name = prefs.getString(SAVE_NAME, null);
 		String passwd = prefs.getString(SAVE_PASSWD, null);
 		if(name != null && passwd != null){
@@ -124,7 +124,7 @@ public class HouseholdLoginActivity extends Activity {
 	protected void onStop(){
 		super.onStop();
 		
-		SharedPreferences.Editor prefs = getPreferences(MODE_PRIVATE).edit();
+		SharedPreferences.Editor prefs = getSharedPreferences("user", MODE_PRIVATE).edit();
 		if(cbxRememberMe.isChecked()){
 			prefs.putString(SAVE_NAME, txtName.getText().toString());
 			prefs.putString(SAVE_PASSWD, txtPasswd.getText().toString());
@@ -137,7 +137,7 @@ public class HouseholdLoginActivity extends Activity {
 	}
 	
 	/**
-	 * Attempts to sign in or register the account specified by the login form.
+	 * Attempts to sign in the account specified by the login form.
 	 * If there are form errors (invalid email, missing fields, etc.), the
 	 * errors are presented and no actual login attempt is made.
 	 */
@@ -169,7 +169,7 @@ public class HouseholdLoginActivity extends Activity {
 			cancel = true;
 		}
 
-		// Check for a valid householdname.
+		// Check for a valid household name.
 		if (name == null || name.length() == 0) {
 			txtName.setError(getString(R.string.error_field_required));
 			focusView = txtName;
@@ -237,7 +237,6 @@ public class HouseholdLoginActivity extends Activity {
 		switch(requestCode){
 			case REGISTER_CODE: 
 				if(resultCode == RESULT_OK){
-					Log.i("ActivityResult", "executing onActivityResult");
 					txtName.setText(data.getStringExtra("name"));
 				}
 				break;
@@ -248,14 +247,13 @@ public class HouseholdLoginActivity extends Activity {
 	
 	
 	/**
-	 * Represents an asynchronous login/registration task used to authenticate
+	 * Represents an asynchronous login task used to authenticate
 	 * the user.
 	 */
 	public class UserLoginTask extends AsyncTask<Void, Void, Void> {
 		
 		@Override
 		protected Void doInBackground(Void... params) {
-			Log.i("UserLoginTask", "executing LoginTask");
 			final Websocket socket = MainActivity.websocket;
 			
 			JSONObject jObj = new JSONObject();
