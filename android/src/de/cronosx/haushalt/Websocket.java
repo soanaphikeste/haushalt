@@ -114,6 +114,9 @@ public class Websocket {
 	public void send(String requestID, JSONObject jObj, ResponseListener listener) {
 		try {
 			responseListeners.append(this.currentID, listener);
+			if(jObj == null){
+				jObj = new JSONObject();
+			}
 			jObj.put("_type", "Request");
 			jObj.put("_requestID", requestID);
 			jObj.put("_responseID", this.currentID++);
