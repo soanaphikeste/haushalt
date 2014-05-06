@@ -2,6 +2,7 @@
  * Includes
  */
 var User = require("./user");
+var request = require("request");
 /*
  * One single household
  */
@@ -133,6 +134,18 @@ Household.prototype = {
 				users : users
 			}
 		});
+		socket.addListener("Scrape", function(obj) {
+			var done = false;
+			request(obj.url, function(err, response, body) {
+				var answer = {};
+				if(!err) {
+					answer.okay = true;
+					answer.data = body;
+				}
+				else answer.okay = false;
+				obj.answer(answer);
+			});
+		}, true);
 	},
 	addUser : function(name, password) {
 		if(this.users[name] !== undefined) {

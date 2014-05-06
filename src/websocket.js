@@ -8,11 +8,23 @@ function Websocket(ws) {
 		var obj = JSON.parse(msg);
 		if(obj._type == "Request") {
 			if(self.requests[obj._requestID] !== undefined) {
-				var answer = self.requests[obj._requestID](obj);
-				if(answer === undefined) answer = {};
-				answer._responseID = obj._responseID;
-				answer._type = "Response";
-				self.socket.send(JSON.stringify(answer));
+				var listener = self.requests[obj._requestID];
+				if(!listener.async) {
+					var answer = listener.listener(obj);
+					if(answer === undefined) answer = {};
+					answer._responseID = obj._responseID;
+					answer._type = "Response";
+					self.socket.send(JSON.stringify(answer));
+				}
+				else {
+					obj.answer = function(ans) {
+						if(ans === undefined) ans = {};
+						ans._responseID = obj._responseID;
+						ans._type = "Response";
+						self.socket.send(JSON.stringify(ans));
+					};
+					listener.listener(obj);
+				}
 			}
 		}
 		else if(obj._type == "Response") {
@@ -42,8 +54,12 @@ Websocket.prototype = {
 	addCloseListener : function(listener) {
 		this.closeStack.push(listener);
 	},
-	addListener : function(request, listener) {
-		this.requests[request] = listener;
+	addListener : function(request, listener, asyncAnswer) {
+		if(asyncAnswer == undefined) asyncAnswer = false;
+		this.requests[request] = {
+			listener: listener,
+			async: asyncAnswer
+		}
 	},
 	send : function(request, obj, listener) {
 		this.responses[this.counter] = listener;
