@@ -28,8 +28,6 @@ import android.widget.ListView;
 
 public class MainActivity extends Activity {
 
-	public static final int LOGIN = 1;
-	
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
 	    @Override
 	    public void onItemClick(AdapterView parent, View view, int position, long id) {
@@ -46,16 +44,27 @@ public class MainActivity extends Activity {
 
 	public static Websocket websocket;
 
+	static{
+		//TODO: Websocket mit Daten aus Configdatei oeffnen
+		try {
+			websocket = new Websocket(new Socket("cronosx.de", 5560));
+		}
+		catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		Intent login = new Intent(this, HouseholdLoginActivity.class);
-		startActivityForResult(login, LOGIN);
-		
 		setContentView(R.layout.activity_main);
-
-//		Websocket.connect();
+		
 		layoutDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         viewList = (ListView) findViewById(R.id.menu_drawer);
 
@@ -90,21 +99,11 @@ public class MainActivity extends Activity {
         getActionBar().setHomeButtonEnabled(true);
 
 
-		connect();
+		//connect();
 	}
 	
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if(requestCode == LOGIN){
-			//System.out.println("logged in");
-			//TODO Load appropriate data and show
-		}
-	}
-	
-	private void connect() {
+	public static void connect(final String host, final int port) {
 
-		final String host = "cronosx.de";
-		final int port = 5560;
 		(new AsyncTask<Void, Void, Void>(){
 
 			@Override
@@ -115,22 +114,7 @@ public class MainActivity extends Activity {
 					websocket.addOpenListener(new OpenListener() {
 						@Override
 						public void onOpen() {
-//							System.out.println("Connected!");
-//							try {
-//								JSONObject jObj = new JSONObject();
-//								jObj.put("name", "Test");
-//								jObj.put("password", "123");
-//								websocket.send("Login", jObj, new ResponseListener() {
-//									@Override
-//									public void onResponse(JSONObject jObj) {
-//										Log.d("Answer", "Received answer: " + jObj.toString());
-//									}
-//									
-//								});
-//							} 
-//							catch (JSONException e) {
-//								e.printStackTrace();
-//							}
+							System.out.println("Connected!");
 						}
 					});
 				} 
