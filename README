@@ -6,9 +6,13 @@ Installation:
 	npm install ws
  3.) Mime installieren:
 	npm install mime
- 4.) Starten:
+ 4.) iconv-lite installieren:
+	npm install iconv-lite
+ 5.) request installieren:
+	npm install request
+ 6.) Starten:
 	node server.js
- 5.) Im Browser öffnen:
+ 7.) Im Browser öffnen:
 	http://localhost:8080
  
 Protokoll:
