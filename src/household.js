@@ -3,6 +3,7 @@
  */
 var User = require("./user");
 var request = require("request");
+var iconv = require('iconv-lite');
 /*
  * One single household
  */
@@ -134,17 +135,22 @@ Household.prototype = {
 				users : users
 			}
 		});
-		socket.addListener("Scrape", function(obj) {
+		socket.addListener("ScrapeChefkoch", function(obj) {
 			var done = false;
-			request(obj.url, function(err, response, body) {
-				var answer = {};
-				if(!err) {
-					answer.okay = true;
-					answer.data = body;
+			request({ 
+					url: obj.url,
+					encoding: null
+				}, 
+				function(err, response, body) {
+					var answer = {};
+					if(!err) {
+						answer.okay = true;
+						answer.data = iconv.decode(body, 'iso-8859-1');
+					}
+					else answer.okay = false;
+					obj.answer(answer);
 				}
-				else answer.okay = false;
-				obj.answer(answer);
-			});
+			);
 		}, true);
 	},
 	addUser : function(name, password) {

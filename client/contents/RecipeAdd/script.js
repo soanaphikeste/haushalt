@@ -67,7 +67,7 @@ Content.define({
 		});
 		node.find("#parse").click(function() {
 			var url = node.find("input[name='url']").val();
-			Websocket.send("Scrape", {url:url}, function(obj) {
+			Websocket.send("ScrapeChefkoch", {url:url}, function(obj) {
 				fillForm(replaceAll(obj.data, "\n", ""));
 			});
 		});
