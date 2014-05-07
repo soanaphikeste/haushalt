@@ -2,3 +2,7 @@
 	path = android/websockets
 	url = http://cronosx.de:5990/Websocket
 	branch = android
+[submodule "android/websocket"]
+	path = android/websocket
+	url = http://cronosx.de:5990/Websocket
+	branch = android

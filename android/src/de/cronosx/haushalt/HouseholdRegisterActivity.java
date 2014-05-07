@@ -34,8 +34,7 @@ import android.widget.TextView;
  * Activity which displays a login screen to the user, offering registration as
  * well.
  */
-public class HouseholdLoginActivity extends Activity {
-	public static final int REGISTER_CODE = 1;
+public class HouseholdRegisterActivity extends Activity {
 	
 	public static final int PASSWD_LENGTH = 1;
 	public static final String SAVE_NAME = "household_name";
@@ -49,99 +48,63 @@ public class HouseholdLoginActivity extends Activity {
 	// UI references.
 	private EditText txtName;
 	private EditText txtPasswd;
+	private EditText txtPasswdRepeat;
 	
-	private CheckBox cbxRememberMe;
+	private View registerFormView;
+	private View registerStatusView;
 	
-	private View loginFormView;
-	private View loginStatusView;
-	
-	private TextView loginStatusMessageView;
+	private TextView registerStatusMessageView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.activity_household_login);
+		setContentView(R.layout.activity_household_register);
 		
 		// Set up the login form.
-		txtName = (EditText) findViewById(R.id.household_login_name);
+		txtName = (EditText) findViewById(R.id.household_register_name);
 
-		txtPasswd = (EditText) findViewById(R.id.household_login_passwd);
-		txtPasswd.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+		txtPasswd = (EditText) findViewById(R.id.household_register_passwd);
+		
+		txtPasswdRepeat = (EditText) findViewById(R.id.household_register_passwdRepeat);
+		txtPasswdRepeat.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
 			@Override
 			public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
 				if (id == R.id.login || id == EditorInfo.IME_NULL) {
-					attemptLogin();
+					attemptRegister();
 					return true;
 				}
 				return false;
 			}
 		});
 		
-		cbxRememberMe = (CheckBox) findViewById(R.id.household_login_remember);
-		
-		loginFormView = findViewById(R.id.login_form);
-		loginStatusView = findViewById(R.id.login_status);
-		loginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
+		registerFormView = findViewById(R.id.register_form);
+		registerStatusView = findViewById(R.id.register_status);
+		registerStatusMessageView = (TextView) findViewById(R.id.register_status_message);
 
-		Button btnLogin = (Button) findViewById(R.id.household_login_login);
-		btnLogin.setOnClickListener(new View.OnClickListener() {
+		findViewById(R.id.household_register_register).setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View view) {
-				attemptLogin();
+				attemptRegister();
 			}
-		});
-		
-		SharedPreferences prefs = getSharedPreferences(Constants.loggInPrefs, MODE_PRIVATE);
-		String name = prefs.getString(SAVE_NAME, null);
-		String passwd = prefs.getString(SAVE_PASSWD, null);
-		if(name != null && passwd != null){
-			txtName.setText(name);
-			txtPasswd.setText(passwd);
-			cbxRememberMe.setChecked(true);
-			btnLogin.performClick();
-		}
-		
-		findViewById(R.id.household_login_register).setOnClickListener(new OnClickListener(){
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(HouseholdLoginActivity.this, HouseholdRegisterActivity.class);
-				HouseholdLoginActivity.this.startActivityForResult(intent, REGISTER_CODE);
-			}
-			
 		});
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.household_login, menu);
+		getMenuInflater().inflate(R.menu.household_register, menu);
 		return true;
-	}
-
-	protected void onStop(){
-		super.onStop();
-		
-		SharedPreferences.Editor prefs = getSharedPreferences("user", MODE_PRIVATE).edit();
-		if(cbxRememberMe.isChecked()){
-			prefs.putString(SAVE_NAME, txtName.getText().toString());
-			prefs.putString(SAVE_PASSWD, txtPasswd.getText().toString());
-		}
-		else{
-			prefs.remove(SAVE_NAME);
-			prefs.remove(SAVE_PASSWD);
-		}
-		prefs.commit();
 	}
 	
 	/**
-	 * Attempts to sign in the account specified by the login form.
+	 * Attempts to sign in or register the account specified by the login form.
 	 * If there are form errors (invalid email, missing fields, etc.), the
 	 * errors are presented and no actual login attempt is made.
 	 */
-	public void attemptLogin() {
+	public void attemptRegister() {
 		if (authTask != null) {
 			return;
 		}
@@ -149,10 +112,12 @@ public class HouseholdLoginActivity extends Activity {
 		// Reset errors.
 		txtName.setError(null);
 		txtPasswd.setError(null);
+		txtPasswdRepeat.setError(null);
 
 		// Store values at the time of the login attempt.
 		String name = txtName.getText().toString();
 		String password = txtPasswd.getText().toString();
+		String password2 = txtPasswdRepeat.getText().toString();
 
 		boolean cancel = false;
 		View focusView = null;
@@ -168,8 +133,20 @@ public class HouseholdLoginActivity extends Activity {
 			focusView = txtPasswd;
 			cancel = true;
 		}
+		else{
+			if (password2 == null || password2.length() == 0) {
+				txtPasswdRepeat.setError(getString(R.string.error_field_required));
+				focusView = txtPasswdRepeat;
+				cancel = true;
+			}
+			else if (! password2.equals(password)) {
+				txtPasswdRepeat.setError(getString(R.string.error_password_not_match));
+				focusView = txtPasswdRepeat;
+				cancel = true;
+			}
+		}
 
-		// Check for a valid household name.
+		// Check for a valid householdname.
 		if (name == null || name.length() == 0) {
 			txtName.setError(getString(R.string.error_field_required));
 			focusView = txtName;
@@ -190,9 +167,9 @@ public class HouseholdLoginActivity extends Activity {
 		else {
 			// Show a progress spinner, and kick off a background task to
 			// perform the user login attempt.
-			loginStatusMessageView.setText(R.string.login_progress_signing_in);
+			registerStatusMessageView.setText(R.string.register_status_message);
 			showProgress(true);
-			authTask = new UserLoginTask();
+			authTask = new UserRegisterTask();
 			authTask.execute((Void) null);
 		}
 	}
@@ -208,52 +185,39 @@ public class HouseholdLoginActivity extends Activity {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
 			int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-			loginStatusView.setVisibility(View.VISIBLE);
-			loginStatusView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+			registerStatusView.setVisibility(View.VISIBLE);
+			registerStatusView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
 						@Override
 						public void onAnimationEnd(Animator animation) {
-							loginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
+							registerStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
 						}
 					});
 
-			loginFormView.setVisibility(View.VISIBLE);
-			loginFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+			registerFormView.setVisibility(View.VISIBLE);
+			registerFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
 						@Override
 						public void onAnimationEnd(Animator animation) {
-							loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+							registerFormView.setVisibility(show ? View.GONE : View.VISIBLE);
 						}
 					});
 		}
 		else {
 			// The ViewPropertyAnimator APIs are not available, so simply show
 			// and hide the relevant UI components.
-			loginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
-			loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+			registerStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
+			registerFormView.setVisibility(show ? View.GONE : View.VISIBLE);
 		}
 	}
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data){
-		switch(requestCode){
-			case REGISTER_CODE: 
-				if(resultCode == RESULT_OK){
-					txtName.setText(data.getStringExtra("name"));
-				}
-				break;
-			default:
-				//Where did this come from?!
-		}
-	}
-	
-	
 	/**
-	 * Represents an asynchronous login task used to authenticate
+	 * Represents an asynchronous login/registration task used to authenticate
 	 * the user.
 	 */
-	public class UserLoginTask extends AsyncTask<Void, Void, Void> {
+	public class UserRegisterTask extends AsyncTask<Void, Void, Void> {
 		
 		@Override
 		protected Void doInBackground(Void... params) {
+
 			final Websocket socket = MainActivity.websocket;
 			
 			JSONObject jObj = new JSONObject();
@@ -265,37 +229,37 @@ public class HouseholdLoginActivity extends Activity {
 				e.printStackTrace();
 			}
 			
-			socket.send("Login", jObj, new ResponseListener(){
+			socket.send("Register", jObj, new ResponseListener(){
 				@Override
 				public void onResponse(JSONObject jObj) {
 					try {
 						authTask = null;
-						
+						HouseholdRegisterActivity.this.runOnUiThread(new Runnable(){
+						    public void run(){
+						    	showProgress(false);
+						    }
+						});  
 						if (jObj.getBoolean("okay")) {
-							HouseholdLoginActivity.this.runOnUiThread(new Runnable(){
+							HouseholdRegisterActivity.this.runOnUiThread(new Runnable(){
 							    public void run(){
-							    	Intent intent = new Intent(HouseholdLoginActivity.this, MainActivity.class);
-									intent.putExtra("household", txtName.getText().toString());
-									startActivity(intent);
+							    	Intent params = new Intent();
+							    	params.putExtra("name", txtName.getText().toString());
+							    	
+							    	setResult(RESULT_OK, params);
 									finish();
 							    }
 							});
 							
 						}
 						else {
-							HouseholdLoginActivity.this.runOnUiThread(new Runnable(){
+							HouseholdRegisterActivity.this.runOnUiThread(new Runnable(){
 							    public void run(){
-							    	txtPasswd.setError(getString(R.string.error_incorrect_password));
-									txtPasswd.requestFocus();
+							    	txtName.setError(getString(R.string.error_name_exists));
+									txtName.requestFocus();
 							    }
 							});
 							
 						}
-						HouseholdLoginActivity.this.runOnUiThread(new Runnable(){
-						    public void run(){
-						    	showProgress(false);
-						    }
-						});
 					}
 					catch (JSONException e) {
 						e.printStackTrace();
