@@ -1,4 +1,6 @@
 function Websocket(ws) {
+	this.requests = {};
+	this.responses = {};
 	this.closeStack = [];
 	this.openStack = [];
 	this.counter = 0;
@@ -46,8 +48,6 @@ function Websocket(ws) {
 };
 
 Websocket.prototype = {
-	requests: {},
-	responses : {},
 	addOpenListener : function(listener) {
 		this.openStack.push(listener);
 	},
