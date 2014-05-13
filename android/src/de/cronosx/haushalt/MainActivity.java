@@ -5,13 +5,11 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Properties;
 
-import de.cronosx.haushalt.Websocket.OpenListener;
+import de.cronosx.contents.fragmentInteraction.OnUserLoginFragmentListener;
 import de.cronosx.haushalt.contents.DisplayFragment;
-import de.cronosx.haushalt.contents.LoginFragment;
+import de.cronosx.haushalt.contents.UserLoginFragment;
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.Fragment;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -21,14 +19,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-public class MainActivity extends Activity {
-
-	public static final String SAVE_NAME = "user_name";
-	public static final String SAVE_PASSWD = "user_passwd";
+public class MainActivity extends Activity implements OnUserLoginFragmentListener{
 	
 	public static Websocket websocket;
 
@@ -100,9 +94,9 @@ public class MainActivity extends Activity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 
-        DisplayFragment frag = new LoginFragment();
-        setTitle(frag.getTitle(this));
-        getFragmentManager().beginTransaction().add(R.id.main_content_frame, frag).commit();
+        fragCurrent = UserLoginFragment.newInstance();
+        setTitle(fragCurrent.getTitle(this));
+        getFragmentManager().beginTransaction().add(R.id.main_content_frame, fragCurrent).commit();
 	}
 
 	/** Swaps fragments in the main content view */
@@ -173,6 +167,19 @@ public class MainActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+
+	@Override
+	public void onLogin(String name) {
+		// TODO:switch to last opened fragment
+		Log.d("UserLogin", name + " logged in");
+	}
+
+	@Override
+	public void onUserRegisterWish() {
+		// TODO: switch to UserRegisterFragment
+		Log.d("UserLogin", "User tries to register");
+		
 	}
 
 }

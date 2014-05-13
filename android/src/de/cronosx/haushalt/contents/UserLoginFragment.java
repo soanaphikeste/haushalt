@@ -1,23 +1,24 @@
-package de.cronosx.haushalt;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+package de.cronosx.haushalt.contents;
 
 import de.cronosx.contents.fragmentInteraction.LoginTask;
 import de.cronosx.contents.fragmentInteraction.OnLoginListener;
-import de.cronosx.haushalt.Websocket.ResponseListener;
+import de.cronosx.contents.fragmentInteraction.OnUserLoginFragmentListener;
+import de.cronosx.haushalt.Constants;
+import de.cronosx.haushalt.R;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Intent;
+import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -26,15 +27,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 /**
- * Activity which displays a login screen to the user, offering registration as
- * well.
+ * A simple {@link android.support.v4.app.Fragment} subclass. Activities that
+ * contain this fragment must implement the
+ * {@link UserRegisterFragment.OnFragmentInteractionListener} interface to
+ * handle interaction events. Use the {@link UserRegisterFragment#newInstance}
+ * factory method to create an instance of this fragment.
+ * 
  */
-public class HouseholdLoginActivity extends Activity implements OnLoginListener{
+public class UserLoginFragment extends DisplayFragment implements OnLoginListener{
+	
 	public static final int REGISTER_CODE = 1;
 	
 	public static final int PASSWD_LENGTH = 1;
-	public static final String SAVE_NAME = "household_name";
-	public static final String SAVE_PASSWD = "household_passwd";
+	public static final String SAVE_NAME = "user_name";
+	public static final String SAVE_PASSWD = "user_passwd";
 	
 	/**
 	 * Keep track of the login task to ensure we can cancel it if requested.
@@ -51,17 +57,39 @@ public class HouseholdLoginActivity extends Activity implements OnLoginListener{
 	private View loginStatusView;
 	
 	private TextView loginStatusMessageView;
+	
+	private Activity activity;
+	private OnUserLoginFragmentListener listener;
+
+	/**
+	 * Use this factory method to create a new instance of this fragment using
+	 * the provided parameters.
+	 * 
+	 * @return A new instance of fragment UserLoginFragment.
+	 */
+	public static UserLoginFragment newInstance() {
+		UserLoginFragment fragment = new UserLoginFragment();
+		return fragment;
+	}
+
+	public UserLoginFragment() {
+		// Required empty public constructor
+	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+	}
 
-		setContentView(R.layout.activity_household_login);
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		activity = getActivity();
 		
 		// Set up the login form.
-		txtName = (EditText) findViewById(R.id.household_login_name);
-
-		txtPasswd = (EditText) findViewById(R.id.household_login_passwd);
+		txtName = (EditText) activity.findViewById(R.id.user_login_name);
+		System.out.println(txtName == null);
+		txtPasswd = (EditText) activity.findViewById(R.id.user_login_passwd);
 		txtPasswd.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
 			@Override
@@ -74,13 +102,13 @@ public class HouseholdLoginActivity extends Activity implements OnLoginListener{
 			}
 		});
 		
-		cbxRememberMe = (CheckBox) findViewById(R.id.household_login_remember);
+		cbxRememberMe = (CheckBox) activity.findViewById(R.id.user_login_remember);
 		
-		loginFormView = findViewById(R.id.login_form);
-		loginStatusView = findViewById(R.id.login_status);
-		loginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
+		loginFormView = activity.findViewById(R.id.user_login_form);
+		loginStatusView = activity.findViewById(R.id.user_login_status);
+		loginStatusMessageView = (TextView) activity.findViewById(R.id.user_login_status_message);
 
-		Button btnLogin = (Button) findViewById(R.id.household_login_login);
+		Button btnLogin = (Button) activity.findViewById(R.id.user_login_login);
 		btnLogin.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -89,7 +117,7 @@ public class HouseholdLoginActivity extends Activity implements OnLoginListener{
 			}
 		});
 		
-		SharedPreferences prefs = getSharedPreferences(Constants.loggInPrefs, MODE_PRIVATE);
+		SharedPreferences prefs = activity.getSharedPreferences(Constants.loggInPrefs, Activity.MODE_PRIVATE);
 		String name = prefs.getString(SAVE_NAME, null);
 		String passwd = prefs.getString(SAVE_PASSWD, null);
 		if(name != null && passwd != null){
@@ -99,27 +127,42 @@ public class HouseholdLoginActivity extends Activity implements OnLoginListener{
 			btnLogin.performClick();
 		}
 		
-		findViewById(R.id.household_login_register).setOnClickListener(new OnClickListener(){
+		activity.findViewById(R.id.user_login_register).setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(HouseholdLoginActivity.this, HouseholdRegisterActivity.class);
-				HouseholdLoginActivity.this.startActivityForResult(intent, REGISTER_CODE);
+				listener.onUserRegisterWish();
 			}
 			
 		});
+		
+		// Inflate the layout for this fragment
+		Log.d("UserLoginInflate", "" + (container == null));
+		return inflater.inflate(R.layout.fragment_user_login, container,
+				false);
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.household_login, menu);
-		return true;
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		try {
+			listener = (OnUserLoginFragmentListener) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement OnUserLoginListener");
+		}
 	}
 
-	protected void onStop(){
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		listener = null;
+	}
+	
+	@Override
+	public void onStop(){
 		super.onStop();
 		
-		SharedPreferences.Editor prefs = getSharedPreferences("user", MODE_PRIVATE).edit();
+		SharedPreferences.Editor prefs = activity.getSharedPreferences("user", Activity.MODE_PRIVATE).edit();
 		if(cbxRememberMe.isChecked()){
 			prefs.putString(SAVE_NAME, txtName.getText().toString());
 			prefs.putString(SAVE_PASSWD, txtPasswd.getText().toString());
@@ -191,7 +234,7 @@ public class HouseholdLoginActivity extends Activity implements OnLoginListener{
 			authTask.execute("household", txtName.getText().toString(), txtPasswd.getText().toString());
 		}
 	}
-
+	
 	/**
 	 * Shows the progress UI and hides the login form.
 	 */
@@ -226,38 +269,28 @@ public class HouseholdLoginActivity extends Activity implements OnLoginListener{
 			loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
 		}
 	}
+	@Override
+	public String getTitle(Context context) {
+		return context.getResources().getString(R.string.user_login_title);
+	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data){
-		switch(requestCode){
-			case REGISTER_CODE: 
-				if(resultCode == RESULT_OK){
-					txtName.setText(data.getStringExtra("name"));
-				}
-				break;
-			default:
-				//Where did this come from?!
-		}
+	public Menu getOptionsMenu(Context context, Menu m) {
+		//TODO: OptionsMenu for UserLogin
+		return m;
 	}
-	
+
 	@Override
 	public void onSuccessfulLogin(String name) {
 		authTask = null;
-		runOnUiThread(new Runnable(){
-		    public void run(){
-		    	Intent intent = new Intent(HouseholdLoginActivity.this, MainActivity.class);
-				intent.putExtra("household", txtName.getText().toString());
-				startActivity(intent);
-				finish();
-				showProgress(false);
-		    }
-		});
+		listener.onLogin(name);
+		showProgress(false);
 	}
 
 	@Override
 	public void onFailedLogin() {
 		authTask = null;
-		runOnUiThread(new Runnable(){
+		activity.runOnUiThread(new Runnable(){
 		    public void run(){
 		    	txtPasswd.setError(getString(R.string.error_incorrect_password));
 				txtPasswd.requestFocus();
@@ -271,5 +304,5 @@ public class HouseholdLoginActivity extends Activity implements OnLoginListener{
 		authTask = null;
 		showProgress(false);
 	}
-	
+
 }
