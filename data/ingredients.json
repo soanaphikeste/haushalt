@@ -1,0 +1,9 @@
+[{
+	aliases : ['mehl', 'flour'],
+	name : 'Mehl'
+	transformfactor : 0.000715 //1 gram = x liter
+}, {
+	aliases : ['milch', 'vollmilch', 'milk'],
+	name : 'Milch'
+	transformfactor : 0.000970874 //1 gram = x liter
+}]
