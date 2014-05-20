@@ -1,9 +1,29 @@
 [{
-	aliases : ['mehl', 'flour'],
+	aliases : ['mehl', 'flour', 'weizenmehl', 'weisses mehl', weißes mehl'],
 	name : 'Mehl'
-	transformfactor : 0.000715 //1 gram = x liter
+	transformfactor : 715 //x gram = 1 liter
 }, {
 	aliases : ['milch', 'vollmilch', 'milk'],
 	name : 'Milch'
-	transformfactor : 0.000970874 //1 gram = x liter
+	transformfactor : 0.000970874 //x gram = 1 liter
+}, {
+	aliases : ['reis', 'rice'],
+	name : 'Reis'
+	transformfactor : 880 //x gram = 1 liter
+}, {
+	aliases : ['gries'], // englisch fehlt
+	name : 'Gries
+	transformfactor : 850 //x gram = 1 liter
+}, {
+	aliases : ['zucker', 'sugar', 'weisser zucker', white sugar', 'weißer zucker'],
+	name : 'Zucker'
+	transformfactor : 1020 //x gram = 1 liter
+}, {
+	aliases : ['salz', 'salt', 'jodsalz'],
+	name : 'Salz'
+	transformfactor : 1250 //x gram = 1 liter
+}, {
+	aliases : ['kakao', 'cacao', 'cocoa'],
+	name : 'Kakao'
+	transformfactor : 670 //x gram = 1 liter
 }]
