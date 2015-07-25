@@ -1,8 +1,4 @@
-[submodule "android/websockets"]
-	path = android/websockets
-	url = http://cronosx.de:5990/Websocket
-	branch = android
 [submodule "android/websocket"]
 	path = android/websocket
-	url = http://cronosx.de:5990/Websocket
+	url = git@git.cronosx.de:prior/websocket.git
 	branch = android
